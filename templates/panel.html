@@ -1,0 +1,182 @@
+{% extends 'base.html' %} 
+
+{% block content %}
+
+<form class="form-inline mt-0 mt-sm-2" action="{{ url_for('filtering') }}" method="POST"> <!-- "/filtering" -->
+    <div class="form-group row">
+        <div class="col-sm-auto pr-0 w-80" style="width: 238px;">
+           <select id="regionSel" name="region_options" multiple>
+                {% for r in regions %}
+                    <option value={{ loop.index }}>{{ r }}</option>
+                {% endfor %}
+            </select>        
+        </div>
+
+        <div class="col-auto ml-1 mt-2 mt-sm-0 px-0">
+            <button class="btn btn-primary mt-2 mt-sm-3 mt-md-3 mt-lg-3 px-2 px-sm-3" type="submit" name="action" style="
+            font-size: 15px;">SUBMIT</button>
+            <!-- <button class="btn btn-primary mt-2 mt-sm-3 mt-md-3 mt-lg-3 px-1 px-sm-3" type="submit" name="action" style="
+            font-size: 14px;">SUBMIT</button> -->
+        </div>
+    </div>
+</form>
+
+<div class="form-inline mt-1 mt-sm-3"> <!-- <form class="form-inline mt-2 mt-sm-4" action="{{ url_for('filtering') }}" method="POST" was searching before -->
+    <div class="form-group row has-search">
+        <div class="col-sm-auto pr-0 w-75 d-inline"> <!-- <div class="col-sm-auto pr-0 w-75"> -->
+            <span class="fa fa-search form-control-feedback"></span>
+            <label class="mb-2 px-1 d-block" for="search" style="margin-left: 1px; width: 80px; height: 24px; background-color: #48929b; color: white;">COUNTRY</label>
+            <input id="search" name="search_val" value="" type="text" class="form-control col-12 col-sm-auto" style="width: 225px;" placeholder="Search"/>
+            <!-- <input id="search" name="search_val" value="" type="text" class="form-control col-12 col-sm-auto" placeholder="Search"/> -->
+        </div>
+    
+        <div class="col-auto ml-1 pl-0" style="margin-top: 32px;"> <!-- <div class="col-auto ml-1 pl-0"> -->
+            <button id="search_btn" class="btn btn-secondary px-1 px-sm-3" style="width: 55px;" name="action" disabled>GO</button> <!-- type="submit"  -->
+        </div>
+    </div>
+</div>
+
+<div id="tbl-page" class="my-1 mb-3 my-sm-3 my-lg-4" style="overflow:scroll;">
+    <table class="paginate">
+        <thead>
+            <tr>
+                <th>YEAR</th>
+                <th>QUARTER</th>
+                <th>COUNTRY</th>
+                <th>REGION</th>
+                <th>METHOD</th>
+                <th>RT_SPREAD</th>
+                <th>ERP</th>
+                <th>CRP</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for cr in crpJS %}
+            <tr>
+                <td data-th="YEAR" class="text-dark">{{ cr['YEAR'] }}</td>
+                <td data-th="QUARTER" class="text-dark">{{ cr['QUARTER'] }}</td>
+                <td data-th="COUNTRY" class="text-dark">{{ cr['COUNTRY'] }}</td>
+                <td data-th="REGION" class="text-dark">{{ cr['REGION'] }}</td>
+                <td data-th="METHOD" class="text-dark">{{ cr['METHOD'] }}</td>
+                <td data-th="RT_SPREAD" class="text-dark">{{ cr['RATING_SPREAD']|conv_percents }}</td>
+                <td data-th="ERP" class="text-dark">{{ cr['ERP']|conv_percents }}</td>
+                <td data-th="CRP" class="text-dark">{{ cr['CRP']|conv_percents }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+ <ul class="pagination justify-content-center">  
+
+    <li class="page-item">
+        {% if current_page == 1 %} 
+            <a id="previous" class="page-link" href="#!" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+            </a>
+        {% else %}
+            <a id="previous" class="page-link" href="{{ url_for('panel', current_page=current_page-1) }}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+            </a>
+        {% endif %}    
+    </li>
+    
+    {% for page_number in pages %}
+        {% if page_number == current_page %}
+            <li class="page-item active"><a class="page-link" href="#!">{{ page_number }}</a></li>
+        {% else %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('panel', current_page=page_number) }}">{{ page_number }}</a></li>
+        {% endif %} 
+    {% endfor %}
+
+    <li class="page-item">
+        {% if current_page < pages|length %}  
+            <a id="next" class="page-link" href="{{ url_for('panel', current_page=current_page+1) }}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+            </a>
+        {% else %}
+            <a id="next" class="page-link" href="#!" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+            </a>        
+        {% endif %} 
+    </li>
+
+  </ul>
+
+{% endblock %}
+
+{% block morescripts %}
+<script type="text/javascript">
+    const crpJSonCl = {{ crpJSonCl|tojson }}; 
+    //console.log(crpJSonCl);
+    let $filteredOptions = new Array();
+    const page_limit = 2;
+
+    const filtered = {{ filtered|tojson }};
+    //console.log(filtered);
+
+    // PANEL.HTML - round a number, which could be also string to certain decimals
+    //function round(value, decimals) {
+        //return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+    //}
+
+    // PANEL.HTML - search function by page
+    function srchPagin(page) {
+        //console.log($filteredOptions);
+
+        // my page records
+        const filtPg = $filteredOptions.slice((page - 1) * page_limit, (page) * page_limit); // page * page_limit, (page + 1) * page_limit  
+        //console.log(filtPg);    
+
+        // my table records for this current page
+        $("tbody").html("");
+        let output = "";
+        $.each(filtPg, function(i) {
+            output += '<tr>'
+            output += '<td data-th="YEAR" class="text-dark">' + filtPg[i].YEAR + '</td>'
+            output += '<td data-th="QUARTER" class="text-dark">' + filtPg[i].QUARTER + '</td>'
+            output += '<td data-th="COUNTRY" class="text-dark">' + filtPg[i].COUNTRY + '</td>'
+            output += '<td data-th="REGION" class="text-dark">' + filtPg[i].REGION + '</td>'
+            output += '<td data-th="METHOD" class="text-dark">' + filtPg[i].METHOD + '</td>'
+            output += '<td data-th="RT_SPREAD" class="text-dark">' + parseFloat(filtPg[i].RATING_SPREAD*100).toFixed(3) + "%" + '</td>'
+            output += '<td data-th="ERP" class="text-dark">' + parseFloat(filtPg[i].ERP*100).toFixed(3) + "%"  + '</td>'
+            output += '<td data-th="CRP" class="text-dark">' + parseFloat(filtPg[i].CRP*100).toFixed(3) + "%"  + '</td>'
+            output += '</tr>'
+        });
+        $("tbody").html(output);  
+
+        // add active class to highlight your current page
+        $.each($("li.page-item"), function(i){
+            if (i==page) {
+                $(this).addClass("active");
+            } else {
+                $(this).removeClass("active");
+            }
+        });   
+        
+        // on filtered Page 1 there is no previous page, only next page
+        if (page==1) {
+            $("a#previous.page-link")[0].href = "#!";
+        } else {
+            const prevPage = parseInt(page)-1;
+            $("a#previous.page-link")[0].href = "javascript:srchPagin(" + prevPage + ")";
+        };
+        
+        // number of pages filtered
+        const pages = Math.ceil($filteredOptions.length / page_limit);
+
+        // on Last Page there is no next page, only previous page
+        if (page==pages) {
+            $("a#next.page-link")[0].href = "#!";
+        } else {
+            const nextPage = parseInt(page)+1;
+            $("a#next.page-link")[0].href = "javascript:srchPagin(" + nextPage + ")";
+        };        
+    };      
+
+</script>
+{% endblock %}

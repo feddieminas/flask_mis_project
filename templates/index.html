@@ -1,0 +1,185 @@
+{% extends 'base.html' %} 
+
+{% block content %}
+
+<div class="d-flex justify-content-start align-items-start mt-sm-2">
+    <form id="wacc_inputs" class="mt-3 mt-sm-2" method="POST" action="{{ url_for('wacc_nums') }}">
+        {{ form.csrf_token }}    
+        <fieldset class="mb-1" style="width: 110px;"><legend class="pl-1 bg-primary text-white">WACC
+            <span class="fa fa-calculator mx-1"></span></legend></fieldset>
+        
+        <div class="form-row">  
+            <div class="form-group col-md-5">
+                {{ form.country.label }} {{ form.country(class_="form-control") }}
+            </div>           
+            <div class="form-group col-md-4">
+                {{ form.weights.label }} {{ form.weights(class_="form-control") }}
+            </div>           
+            <div class="form-group col-md-3">        
+                {{ form.beta.label }} {{ form.beta(class_="form-control") }}
+            </div>              
+        </div>       
+
+        <div class="form-row">         
+            <div class="form-group col-md-3">    
+                {{ form.yield_on_debt.label }} {{ form.yield_on_debt(class_="form-control") }}
+            </div>
+            <div class="form-group col-md-3">                    
+                {{ form.tax.label }} {{ form.tax(class_="form-control") }}
+            </div>    
+            <div class="form-group col-md-3">        
+                {{ form.mvalue_debt.label }} {{ form.mvalue_debt(class_="form-control") }}
+            </div> 
+            <div class="form-group col-md-3">            
+                {{ form.mvalue_equity.label }} {{ form.mvalue_equity(class_="form-control") }}
+            </div>            
+        </div>         
+
+        {{ form.submit(class_="btn btn-primary") }}
+    </form>
+</div>
+
+<div>
+    <table id="wacc-results" class="my-1 mb-3 my-sm-3 my-lg-4">
+        <!-- need to create the table and resize in front end (search for two header rows), then we change the values from below when submitting. When we init the page, table innerHtml is "" -->
+        <!-- try to add another column header if make it three headers -->
+        <thead>
+			<tr>
+				<th>Table Header - Years</th>
+				<th>Year 2015</th>
+				<th>Year 2015</th>
+				<th>Year 2016</th>
+				<th>Year 2017</th>
+				<th>Year 2017</th>
+			</tr>
+			<tr>
+				<th>Table Header - Seasons</th>
+				<th>Spring</th>
+				<th>Autumn</th>
+				<th>Spring + Autumn</th>
+				<th>Spring</th>
+				<th>Autumn</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Daily Fee<span data-model="Model" class="modelHeader"></span></td>
+				<td data-year="Year 2015" data-season="Spring" data-other="other">1 E /d</td>
+				<td data-year="Year 2015" data-season="Autumn">2 E /d</td>
+				<td data-year="Year 2016" data-season="Spring + Autumn">3 E /d</td>
+				<td data-year="Year 2017" data-season="Spring">4 E /d</td>
+				<td data-year="Year 2017" data-season="Autumn">5 E /d<span data-model="CDS" class="modelHeader"></span></td>
+			</tr>
+			<tr>
+				<td>Weekly Fee</td>
+				<td data-year="Year 2015" data-season="Spring">7 E /w</td>
+				<td data-year="Year 2015" data-season="Autumn">14 E /w</td>
+				<td data-year="Year 2016" data-season="Spring + Autumn">21 E /w</td>
+				<td data-year="Year 2017" data-season="Spring">28 E /w</td>
+				<td data-year="Year 2017" data-season="Autumn">35 E /w</td>
+			</tr>
+			<tr>
+				<td>Monthly Fee</td>
+				<td data-year="Year 2015" data-season="Spring">30 E /m</td>
+				<td data-year="Year 2015" data-season="Autumn">60 E /m</td>
+				<td data-year="Year 2016" data-season="Spring + Autumn">90 E /m</td>
+				<td data-year="Year 2017" data-season="Spring">120 E /m</td>
+				<td data-year="Year 2017" data-season="Autumn">150 E /m</td>
+			</tr>
+			<tr>
+				<td>Quarter-year Fee</td>
+				<td data-year="Year 2015" data-season="Spring">90 E /qy</td>
+				<td data-year="Year 2015" data-season="Autumn">180 E /qy</td>
+				<td data-year="Year 2016" data-season="Spring + Autumn">270 E /qy</td>
+				<td data-year="Year 2017" data-season="Spring">360 E /qy</td>
+				<td data-year="Year 2017" data-season="Autumn">450 E /qy</td>
+			</tr>
+			<tr>
+				<td>Half-year Fee</td>
+				<td data-year="Year 2015" data-season="Spring">180 E /hy</td>
+				<td data-year="Year 2015" data-season="Autumn">360 E /hy</td>
+				<td data-year="Year 2016" data-season="Spring + Autumn">540 E /hy</td>
+				<td data-year="Year 2017" data-season="Spring">720 E /hy</td>
+				<td data-year="Year 2017" data-season="Autumn">900 E /hy</td>
+			</tr>
+			<tr>
+				<td>Yearly Fee</td>
+				<td data-year="Year 2015" data-season="Spring">360 E /y</td>
+				<td data-year="Year 2015" data-season="Autumn">780 E /y</td>
+				<td data-year="Year 2016" data-season="Spring + Autumn">1080 /y</td>
+				<td data-year="Year 2017" data-season="Spring">1440 E /y</td>
+				<td data-year="Year 2017" data-season="Autumn">1900 E /y</td>
+			</tr>
+			<tr>
+				<td>Special Fee</td>
+				<td data-year="Year 2015" data-season="Spring">+5 E /so</td>
+				<td data-year="Year 2015" data-season="Autumn">+10 E /so</td>
+				<td data-year="Year 2016" data-season="Spring + Autumn">+15 E /so</td>
+				<td data-year="Year 2017" data-season="Spring">+20 E /so</td>
+				<td data-year="Year 2017" data-season="Autumn">+25 E /so</td>
+			</tr>
+			<tr>
+				<td>Prolonging Fee</td>
+				<td data-year="Year 2015" data-season="Spring">+2 E /po</td>
+				<td data-year="Year 2015" data-season="Autumn">+4 E /po</td>
+				<td data-year="Year 2016" data-season="Spring + Autumn">+6 E /po</td>
+				<td data-year="Year 2017" data-season="Spring">+8 E /po</td>
+				<td data-year="Year 2017" data-season="Autumn">+10 E /po</td>
+			</tr>
+			<tr>
+				<td>Night Fee</td>
+				<td data-year="Year 2015" data-season="Spring">+1,5 E /nd</td>
+				<td data-year="Year 2015" data-season="Autumn">+3 E /nd</td>
+				<td data-year="Year 2016" data-season="Spring + Autumn">+4,5 E /nd</td>
+				<td data-year="Year 2017" data-season="Spring">+6 E /nd</td>
+				<td data-year="Year 2017" data-season="Autumn">+7,5 E /nd</td>
+			</tr>
+			<tr>
+				<td>Day Fee</td>
+				<td data-year="Year 2015" data-season="Spring">-1,5 E /dd</td>
+				<td data-year="Year 2015" data-season="Autumn">-3 E /dd</td>
+				<td data-year="Year 2016" data-season="Spring + Autumn">-4,5 E /dd</td>
+				<td data-year="Year 2017" data-season="Spring">-6 E /dd</td>
+				<td data-year="Year 2017" data-season="Autumn">-7,5 E /dd</td>
+			</tr>
+			<tr>
+				<td>Noon Fee</td>
+				<td data-year="Year 2015" data-season="Spring">-5 E /nnd</td>
+				<td data-year="Year 2015" data-season="Autumn">-10 E /nnd</td>
+				<td data-year="Year 2016" data-season="Spring + Autumn">-15 E /nnd</td>
+				<td data-year="Year 2017" data-season="Spring">-20 E /nnd</td>
+				<td data-year="Year 2017" data-season="Autumn">-25 E /nnd</td>
+			</tr>			
+		</tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+
+{% block morescripts %}
+<script type="text/javascript">
+
+    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    $('#wacc_inputs').on('submit', function(e) {
+        $.ajax({
+            data : {
+                beta: $('input[name="beta"]').val(),
+                mvalue_equity: $('input[name="mvalue_equity"]').val(),
+                weights: $('#weights').children("option:selected").val()
+            },
+            type : 'POST',
+            url : $SCRIPT_ROOT + '/_wacc_nums'
+            })
+            .done(function(data) {
+                console.log(data);
+                $.each(data.result, function(key, item) {
+                    console.log(item.name);
+                    console.log(item.value);
+                });
+            });
+        e.preventDefault();
+    });
+
+</script>
+{% endblock %}

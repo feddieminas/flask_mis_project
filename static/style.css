@@ -1,0 +1,360 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap');
+
+body {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+}
+
+/* NAVBAR */
+
+* {
+    margin: 0;
+    padding:0;
+    border:0;
+}
+
+h2 {
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: whitesmoke;
+}
+
+#logo {
+    float:left;
+    font-size: 280%;
+    margin-left: 30px;
+}
+
+#menu {
+    font-size: 110%;
+    list-style-type: none;
+    letter-spacing: 4px; 
+}
+
+#logo, #menu {
+    line-height: 45px;
+}
+
+#menu li {
+    float: right;
+    margin-right: 23px; /* 30px */
+}
+
+#menu a {
+    text-decoration: none;
+    color: white;
+}
+
+#menu a:hover {
+    border-bottom: 1px solid white;
+}
+
+.active {
+    border-bottom: 1px solid white;
+}
+
+/* PANEL FILTERING */
+
+.multiselect-container {
+    width: 100% !important;
+}
+
+button.multiselect, button.multiselect:hover {
+    background-color: navy;
+    color: white;
+    border: 1px solid navy;
+}
+
+.form-inline .multiselect-container li a label.checkbox input[type=checkbox], .form-inline .multiselect-container li a label.radio input[type=radio] {
+    margin-left: -20px;
+    margin-right: 0px;
+}
+
+/* PANEL */
+
+/*
+#tbl-page {
+    margin: 18px 0px 20px 0px;
+}
+*/
+
+#tbl-page tbody tr:hover {
+    background-color: #bee5eb;
+}
+
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+}
+
+/* Zebra striping */
+tr:nth-of-type(odd) { 
+    background: #eee; 
+}
+
+th { 
+    background: #b8daff; /* #333 */
+    color: black; /* white */
+    font-weight: bold; 
+    cursor: s-resize;
+    background-repeat: no-repeat;
+    background-position: 3% center;
+}
+
+td, th { 
+    padding: 6px; 
+    border: 1px solid #ccc; 
+    text-align: left; 
+}
+
+/* SEARCH BUTTON */
+
+.has-search .form-control {
+    padding-left: 2.375rem;
+}
+
+.has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 6.275rem; /* 2.375rem; 5.875rem*/
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
+}
+
+/* MEDIA QUERIES */
+
+/* Smartphones (portrait and landscape) ----------- */
+@media only screen and (min-width : 320px) and (max-width : 480px) { /* @media only screen and (min-device-width : 320px) and (max-device-width : 480px) */
+    /* last
+    body { 
+        padding: 0; 
+        margin: 0; */
+        /* width: 320px; */
+    /*}*/
+
+    #menu {
+        margin-left: 8px;
+    }
+
+    /*
+    #tbl-page {
+        margin-top: 8px;
+    } 
+    */
+
+    /* BELOW ADDED IT TO TRY. WAS ALL AT @media only screen and (max-width: 768px), (min-device-width: 768px) and (max-device-width: 991px)  { */
+
+    /* PANEL TABLE */
+
+    /* Force table to not be like tables anymore */
+    table, thead, tbody, th, td, tr { 
+        display: block; 
+    }
+    
+    /* Hide table headers (but not display: none;, for accessibility) */
+    thead tr { 
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    tr { border: 1px solid #ccc; }
+    
+    td { 
+        /* Behave  like a "row" */
+        border: none;
+        border-bottom: 1px solid #eee; 
+        position: relative;
+        padding-left: 50%; /* maybe one day 45 or 48% */
+    }
+    
+    table.paginate td:before { 
+        /* Now like a table header */
+        position: absolute;
+        /* Top/left values mimic padding */
+        top: 6px;
+        left: 6px;
+        /* width: 45%; */ 
+        padding-right: 10px; 
+        white-space: nowrap;
+
+        /* Label the data */
+        content: attr(data-th) ": ";
+        font-weight: bold;
+        width: 6.5em;
+        display: inline-block;
+    }
+
+    /* WACC TABLE https://codepen.io/Ernedar/pen/apYQdv */
+
+	#wacc-results thead {
+        display: none;
+    }
+	
+	#wacc-results tr {
+        padding-top: 15px;
+    };
+	
+
+	#wacc-results td {
+		display: block;
+		position: relative;
+    }
+	
+	#wacc-results td::before {
+		content: attr(data-year);
+		display: block;
+		width: 100%;
+    }
+	
+	#wacc-results td::after {
+		position: absolute;
+		left: 0;
+		content: attr(data-season);
+    }    
+
+	span.modelHeader::after {
+        position: absolute;
+        right: 6px;
+        content: attr(data-model);
+    }
+
+}    
+
+@media only screen and (min-width : 481px) and (max-width: 767px ) { /* ex. @media screen and (max-width: 768px ) then changed it to @media only screen and (min-width : 481px) and (max-width: 768px ) */
+    #menu {
+        clear: left;
+        float: left;
+        margin-left: 30px;
+        margin-bottom: 3px; /* 10px */
+        line-height: 25px;
+    }
+
+    .form-inline .multiselect-container li a label.checkbox input[type=checkbox], .form-inline .multiselect-container li a label.radio input[type=radio] {
+        margin-right: 2px !important;
+    }
+
+    /* BELOW ADDED IT TO TRY. WAS ALL AT @media only screen and (max-width: 768px), (min-device-width: 768px) and (max-device-width: 991px)  { */
+
+    /* PANEL TABLE */
+
+    /* Force table to not be like tables anymore */
+    table, thead, tbody, th, td, tr { 
+        display: block; 
+    }
+    
+    /* Hide table headers (but not display: none;, for accessibility) */
+    thead tr { 
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    tr { border: 1px solid #ccc; }
+    
+    td { 
+        /* Behave  like a "row" */
+        border: none;
+        border-bottom: 1px solid #eee; 
+        position: relative;
+        padding-left: 50%;
+    }
+    
+    table.paginate td:before { 
+        /* Now like a table header */
+        position: absolute;
+        /* Top/left values mimic padding */
+        top: 6px;
+        left: 6px;
+        /* width: 45%; */ 
+        padding-right: 10px; 
+        white-space: nowrap;
+
+        /* Label the data */
+        content: attr(data-th) ": ";
+        font-weight: bold;
+        width: 6.5em;
+        display: inline-block;
+    }
+
+    /* WACC TABLE https://codepen.io/Ernedar/pen/apYQdv */
+
+	#wacc-results thead {
+        display: none;
+    }
+	
+	#wacc-results tr {
+        padding-top: 15px;
+    }
+
+	#wacc-results td {
+		display: block;
+		position: relative;
+    }
+	
+	#wacc-results td::before {
+		content: attr(data-year);
+		display: block;
+		width: 100%;
+    }
+	
+	#wacc-results td::after {
+		position: absolute;
+		left: 0;
+		content: attr(data-season);
+    }
+
+	span.modelHeader::after {
+        position: absolute;
+        right: 6px;
+        content: attr(data-model);
+    }
+
+}   
+
+/* Smartphones (portrait and landscape) ----------- */
+/*@media only screen and (max-width: 768px), (min-device-width: 768px) and (max-device-width: 991px)  {*/
+
+    /* was the above one before */
+
+    /*
+    Label the data... OLD BELOW
+    */
+
+    /*
+    td:before {
+        content: attr(data-th) ": ";
+        font-weight: bold;
+        width: 6.5em;
+        display: inline-block;
+    }
+    */
+
+    /*
+    td:after {
+    content: "  | After";
+    font-weight: lighter;
+    width: 6.5em;
+    display: inline-block;
+    } 
+    */   
+/*}*/
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    .form-inline .multiselect-container li a label.checkbox input[type=checkbox], .form-inline .multiselect-container li a label.radio input[type=radio] {
+        margin-right: 2px !important;
+    }   
+} 
+
+@media only screen and (min-width: 992px) {
+    td, th {
+        max-width: 140px;
+    }
+    
+    .form-inline .multiselect-container li a label.checkbox input[type=checkbox], .form-inline .multiselect-container li a label.radio input[type=radio] {
+        margin-right: 2px !important;
+    }    
+}
