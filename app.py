@@ -12,8 +12,6 @@ from bson.son import SON
 from bson.json_util import dumps
 from user import User
 
-# create dropdown multiple list, search box, sort ascending descending
-# https://mail.python.org/pipermail/flask/2016-April/000354.html
 
 app = Flask(__name__)
 
@@ -95,7 +93,6 @@ def db_data(filtering=None):
         theRegions = regions()
         filtering = {theRegions[int(f)-1] for f in filtering if f.isdigit()}
         data = [x for x in filterbyvalue(data, filtering)]
-        # session['f'] = None
 
     return data
 
@@ -114,8 +111,6 @@ def filterbyvalue(seq, values):
 @app.route('/', methods=['GET'])
 def index():
     form = WACCForm()
-    # if request.method == 'POST' and form.validate_on_submit():
-    # pass
     form.country.choices = [(r, r) for r in regions()]
     return render_template('index.html', form=form)
 
@@ -132,7 +127,6 @@ def wacc_nums():
     mylist = list([beta, mvalue_equity, weights])
     all_data = [{"name": item[0], "value": item[1]} for item in mylist]
     return jsonify(result=all_data)
-    # https://stackoverflow.com/questions/45523027/flask-json-how-do-i-return-mutiple-rows-as-json-objects
 
 
 """ PANEL.HTML """
@@ -275,7 +269,7 @@ class Switcher(object):
 @app.route('/admin/db_upload', methods=['POST'])
 @login_required
 def db_upload():
-    for f in request.files.getlist('db_file'):  # request.files['db_file']
+    for f in request.files.getlist('db_file'):
         myFileYesExt = f.filename
         if myFileYesExt.endswith('csv'):
             df = pd.read_csv(f)

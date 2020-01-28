@@ -1,7 +1,3 @@
-# Code Institute
+# Flask MIS Project
 
-Welcome FMD,
-
-We have preinstalled all of the tools you need to get started.
-
-Happy coding!
+wacc integration

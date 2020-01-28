@@ -36,7 +36,7 @@ h2 {
 
 #menu li {
     float: right;
-    margin-right: 23px; /* 30px */
+    margin-right: 23px;
 }
 
 #menu a {
@@ -71,12 +71,6 @@ button.multiselect, button.multiselect:hover {
 
 /* PANEL */
 
-/*
-#tbl-page {
-    margin: 18px 0px 20px 0px;
-}
-*/
-
 #tbl-page tbody tr:hover {
     background-color: #bee5eb;
 }
@@ -92,8 +86,8 @@ tr:nth-of-type(odd) {
 }
 
 th { 
-    background: #b8daff; /* #333 */
-    color: black; /* white */
+    background: #b8daff;
+    color: black;
     font-weight: bold; 
     cursor: s-resize;
     background-repeat: no-repeat;
@@ -118,7 +112,7 @@ td, th {
     display: block;
     width: 2.375rem;
     height: 2.375rem;
-    line-height: 6.275rem; /* 2.375rem; 5.875rem*/
+    line-height: 6.275rem;
     text-align: center;
     pointer-events: none;
     color: #aaa;
@@ -126,26 +120,11 @@ td, th {
 
 /* MEDIA QUERIES */
 
-/* Smartphones (portrait and landscape) ----------- */
-@media only screen and (min-width : 320px) and (max-width : 480px) { /* @media only screen and (min-device-width : 320px) and (max-device-width : 480px) */
-    /* last
-    body { 
-        padding: 0; 
-        margin: 0; */
-        /* width: 320px; */
-    /*}*/
+@media only screen and (min-width : 320px) and (max-width : 480px) {
 
     #menu {
         margin-left: 8px;
     }
-
-    /*
-    #tbl-page {
-        margin-top: 8px;
-    } 
-    */
-
-    /* BELOW ADDED IT TO TRY. WAS ALL AT @media only screen and (max-width: 768px), (min-device-width: 768px) and (max-device-width: 991px)  { */
 
     /* PANEL TABLE */
 
@@ -177,7 +156,6 @@ td, th {
         /* Top/left values mimic padding */
         top: 6px;
         left: 6px;
-        /* width: 45%; */ 
         padding-right: 10px; 
         white-space: nowrap;
 
@@ -188,7 +166,7 @@ td, th {
         display: inline-block;
     }
 
-    /* WACC TABLE https://codepen.io/Ernedar/pen/apYQdv */
+    /* WACC TABLE */
 
 	#wacc-results thead {
         display: none;
@@ -224,12 +202,12 @@ td, th {
 
 }    
 
-@media only screen and (min-width : 481px) and (max-width: 767px ) { /* ex. @media screen and (max-width: 768px ) then changed it to @media only screen and (min-width : 481px) and (max-width: 768px ) */
+@media only screen and (min-width : 481px) and (max-width: 767px ) { 
     #menu {
         clear: left;
         float: left;
         margin-left: 30px;
-        margin-bottom: 3px; /* 10px */
+        margin-bottom: 3px;
         line-height: 25px;
     }
 
@@ -237,8 +215,7 @@ td, th {
         margin-right: 2px !important;
     }
 
-    /* BELOW ADDED IT TO TRY. WAS ALL AT @media only screen and (max-width: 768px), (min-device-width: 768px) and (max-device-width: 991px)  { */
-
+ 
     /* PANEL TABLE */
 
     /* Force table to not be like tables anymore */
@@ -269,7 +246,6 @@ td, th {
         /* Top/left values mimic padding */
         top: 6px;
         left: 6px;
-        /* width: 45%; */ 
         padding-right: 10px; 
         white-space: nowrap;
 
@@ -280,7 +256,7 @@ td, th {
         display: inline-block;
     }
 
-    /* WACC TABLE https://codepen.io/Ernedar/pen/apYQdv */
+    /* WACC TABLE  */
 
 	#wacc-results thead {
         display: none;
@@ -315,33 +291,6 @@ td, th {
 
 }   
 
-/* Smartphones (portrait and landscape) ----------- */
-/*@media only screen and (max-width: 768px), (min-device-width: 768px) and (max-device-width: 991px)  {*/
-
-    /* was the above one before */
-
-    /*
-    Label the data... OLD BELOW
-    */
-
-    /*
-    td:before {
-        content: attr(data-th) ": ";
-        font-weight: bold;
-        width: 6.5em;
-        display: inline-block;
-    }
-    */
-
-    /*
-    td:after {
-    content: "  | After";
-    font-weight: lighter;
-    width: 6.5em;
-    display: inline-block;
-    } 
-    */   
-/*}*/
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
     .form-inline .multiselect-container li a label.checkbox input[type=checkbox], .form-inline .multiselect-container li a label.radio input[type=radio] {
