@@ -43,111 +43,183 @@
     <table id="wacc-results" class="my-1 mb-3 my-sm-3 my-lg-4">
         <thead>
 			<tr>
-				<th>Table Header - Years</th>
-				<th>Year 2015</th>
-				<th>Year 2015</th>
-				<th>Year 2016</th>
-				<th>Year 2017</th>
-				<th>Year 2017</th>
+                <th></th>
+				<th colspan="3">CDS & Yield Spread Models</th>
+				<th colspan="3">Rating-Based Models</th>
+			</tr>        
+			<tr>
+				<th></th>
+				<th>DM CDS Official</th>
+				<th>DM CDS Custom</th>
+				<th>DP Yield Official</th>
+				<th>DM Rating Official</th>
+				<th>DM Rating Custom</th>
+                <th>DP Rating Official</th>
 			</tr>
 			<tr>
-				<th>Table Header - Seasons</th>
-				<th>Spring</th>
-				<th>Autumn</th>
-				<th>Spring + Autumn</th>
-				<th>Spring</th>
-				<th>Autumn</th>
+				<th>Last Update</th>
+				<th>Dec 19</th>
+				<th>19 Dec 19</th>
+				<th>Sep 19</th>
+				<th>Dec 19</th>
+				<th>19 Dec 19</th>
+				<th>Sep 19</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
-				<td>Daily Fee<span data-model="Model" class="modelHeader"></span></td>
-				<td data-year="Year 2015" data-season="Spring" data-other="other">1 E /d</td>
-				<td data-year="Year 2015" data-season="Autumn">2 E /d</td>
-				<td data-year="Year 2016" data-season="Spring + Autumn">3 E /d</td>
-				<td data-year="Year 2017" data-season="Spring">4 E /d</td>
-				<td data-year="Year 2017" data-season="Autumn">5 E /d<span data-model="CDS" class="modelHeader"></span></td>
+				<td>Weight RF Rate (A)<span data-model="Model" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM CDS Official">2.00%<span data-model="CDS" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM CDS Custom">1.93%<span data-model="CDS" class="modelHeader"></span></td>
+                <td data-period="Sep 19" data-source="DP Yield Official">1.67%<span data-model="Yield" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM Rating Official">2.00%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM Rating Custom">1.93%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="Sep 19" data-source="DP Rating Official">1.67%<span data-model="Rating" class="modelHeader"></span></td>
 			</tr>
 			<tr>
-				<td>Weekly Fee</td>
-				<td data-year="Year 2015" data-season="Spring">7 E /w</td>
-				<td data-year="Year 2015" data-season="Autumn">14 E /w</td>
-				<td data-year="Year 2016" data-season="Spring + Autumn">21 E /w</td>
-				<td data-year="Year 2017" data-season="Spring">28 E /w</td>
-				<td data-year="Year 2017" data-season="Autumn">35 E /w</td>
-			</tr>
+				<td>Unlevered Industry Beta<span data-model="Model" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM CDS Official">1.00<span data-model="CDS" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM CDS Custom">1.00<span data-model="CDS" class="modelHeader"></span></td>
+                <td data-period="Sep 19" data-source="DP Yield Official">1.00<span data-model="Yield" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM Rating Official">1.00<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM Rating Custom">1.00<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="Sep 19" data-source="DP Rating Official">1.00<span data-model="Rating" class="modelHeader"></span></td>
+			</tr>	
 			<tr>
-				<td>Monthly Fee</td>
-				<td data-year="Year 2015" data-season="Spring">30 E /m</td>
-				<td data-year="Year 2015" data-season="Autumn">60 E /m</td>
-				<td data-year="Year 2016" data-season="Spring + Autumn">90 E /m</td>
-				<td data-year="Year 2017" data-season="Spring">120 E /m</td>
-				<td data-year="Year 2017" data-season="Autumn">150 E /m</td>
-			</tr>
+				<td>Levered Beta (B)<span data-model="Model" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM CDS Official">1.00<span data-model="CDS" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM CDS Custom">1.00<span data-model="CDS" class="modelHeader"></span></td>
+                <td data-period="Sep 19" data-source="DP Yield Official">1.00<span data-model="Yield" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM Rating Official">1.00<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM Rating Custom">1.00<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="Sep 19" data-source="DP Rating Official">1.00<span data-model="Rating" class="modelHeader"></span></td>
+			</tr>	
 			<tr>
-				<td>Quarter-year Fee</td>
-				<td data-year="Year 2015" data-season="Spring">90 E /qy</td>
-				<td data-year="Year 2015" data-season="Autumn">180 E /qy</td>
-				<td data-year="Year 2016" data-season="Spring + Autumn">270 E /qy</td>
-				<td data-year="Year 2017" data-season="Spring">360 E /qy</td>
-				<td data-year="Year 2017" data-season="Autumn">450 E /qy</td>
-			</tr>
+				<td>ERP (C)<span data-model="Model" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM CDS Official">5.20%<span data-model="CDS" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM CDS Custom">5.25%<span data-model="CDS" class="modelHeader"></span></td>
+                <td data-period="Sep 19" data-source="DP Yield Official">6.53%<span data-model="Yield" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM Rating Official">5.20%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM Rating Custom">5.25%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="Sep 19" data-source="DP Rating Official">6.53%<span data-model="Rating" class="modelHeader"></span></td>
+			</tr>            
 			<tr>
-				<td>Half-year Fee</td>
-				<td data-year="Year 2015" data-season="Spring">180 E /hy</td>
-				<td data-year="Year 2015" data-season="Autumn">360 E /hy</td>
-				<td data-year="Year 2016" data-season="Spring + Autumn">540 E /hy</td>
-				<td data-year="Year 2017" data-season="Spring">720 E /hy</td>
-				<td data-year="Year 2017" data-season="Autumn">900 E /hy</td>
+				<td>BASE COE (A + B * C)<span data-model="Model" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM CDS Official">7.20%<span data-model="CDS" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM CDS Custom">7.18%<span data-model="CDS" class="modelHeader"></span></td>
+                <td data-period="Sep 19" data-source="DP Yield Official">8.20%<span data-model="Yield" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM Rating Official">7.20%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM Rating Custom">7.18%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="Sep 19" data-source="DP Rating Official">8.20%<span data-model="Rating" class="modelHeader"></span></td>
 			</tr>
-			<tr>
-				<td>Yearly Fee</td>
-				<td data-year="Year 2015" data-season="Spring">360 E /y</td>
-				<td data-year="Year 2015" data-season="Autumn">780 E /y</td>
-				<td data-year="Year 2016" data-season="Spring + Autumn">1080 /y</td>
-				<td data-year="Year 2017" data-season="Spring">1440 E /y</td>
-				<td data-year="Year 2017" data-season="Autumn">1900 E /y</td>
+ 			<tr>
+				<td>CRP (D)<span data-model="Model" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM CDS Official">0.60%<span data-model="CDS" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM CDS Custom">0.53%<span data-model="CDS" class="modelHeader"></span></td>
+                <td data-period="Sep 19" data-source="DP Yield Official">NA<span data-model="Yield" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM Rating Official">0.49%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM Rating Custom">0.88%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="Sep 19" data-source="DP Rating Official">NA<span data-model="Rating" class="modelHeader"></span></td>
+			</tr>             
+ 			<tr>
+				<td>Int. COE (A + B * C) + (D)<span data-model="Model" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM CDS Official">7.80%<span data-model="CDS" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM CDS Custom">7.71%<span data-model="CDS" class="modelHeader"></span></td>
+                <td data-period="Sep 19" data-source="DP Yield Official">NA<span data-model="Yield" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM Rating Official">7.69%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM Rating Custom">8.05%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="Sep 19" data-source="DP Rating Official">NA<span data-model="Rating" class="modelHeader"></span></td>
+			</tr> 
+ 			<tr>
+				<td>Mkt Equity Val (CUR, MM)<span data-model="Model" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM CDS Official">1.00<span data-model="CDS" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM CDS Custom">1.00<span data-model="CDS" class="modelHeader"></span></td>
+                <td data-period="Sep 19" data-source="DP Yield Official">1.00<span data-model="Yield" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM Rating Official">1.00<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM Rating Custom">1.00<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="Sep 19" data-source="DP Rating Official">1.00<span data-model="Rating" class="modelHeader"></span></td>
+			</tr> 
+ 			<tr>
+				<td>Enterprise Val (%)<span data-model="Model" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM CDS Official">100%<span data-model="CDS" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM CDS Custom">100%<span data-model="CDS" class="modelHeader"></span></td>
+                <td data-period="Sep 19" data-source="DP Yield Official">100%<span data-model="Yield" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM Rating Official">100%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM Rating Custom">100%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="Sep 19" data-source="DP Rating Official">100%<span data-model="Rating" class="modelHeader"></span></td>
+			</tr> 
+ 			<tr>
+				<td>Pre Tax Cost of Debt (%)<span data-model="Model" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM CDS Official">0.00%<span data-model="CDS" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM CDS Custom">0.00%<span data-model="CDS" class="modelHeader"></span></td>
+                <td data-period="Sep 19" data-source="DP Yield Official">0.00%<span data-model="Yield" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM Rating Official">0.00%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM Rating Custom">0.00%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="Sep 19" data-source="DP Rating Official">0.00%<span data-model="Rating" class="modelHeader"></span></td>
 			</tr>
-			<tr>
-				<td>Special Fee</td>
-				<td data-year="Year 2015" data-season="Spring">+5 E /so</td>
-				<td data-year="Year 2015" data-season="Autumn">+10 E /so</td>
-				<td data-year="Year 2016" data-season="Spring + Autumn">+15 E /so</td>
-				<td data-year="Year 2017" data-season="Spring">+20 E /so</td>
-				<td data-year="Year 2017" data-season="Autumn">+25 E /so</td>
-			</tr>
-			<tr>
-				<td>Prolonging Fee</td>
-				<td data-year="Year 2015" data-season="Spring">+2 E /po</td>
-				<td data-year="Year 2015" data-season="Autumn">+4 E /po</td>
-				<td data-year="Year 2016" data-season="Spring + Autumn">+6 E /po</td>
-				<td data-year="Year 2017" data-season="Spring">+8 E /po</td>
-				<td data-year="Year 2017" data-season="Autumn">+10 E /po</td>
-			</tr>
-			<tr>
-				<td>Night Fee</td>
-				<td data-year="Year 2015" data-season="Spring">+1,5 E /nd</td>
-				<td data-year="Year 2015" data-season="Autumn">+3 E /nd</td>
-				<td data-year="Year 2016" data-season="Spring + Autumn">+4,5 E /nd</td>
-				<td data-year="Year 2017" data-season="Spring">+6 E /nd</td>
-				<td data-year="Year 2017" data-season="Autumn">+7,5 E /nd</td>
-			</tr>
-			<tr>
-				<td>Day Fee</td>
-				<td data-year="Year 2015" data-season="Spring">-1,5 E /dd</td>
-				<td data-year="Year 2015" data-season="Autumn">-3 E /dd</td>
-				<td data-year="Year 2016" data-season="Spring + Autumn">-4,5 E /dd</td>
-				<td data-year="Year 2017" data-season="Spring">-6 E /dd</td>
-				<td data-year="Year 2017" data-season="Autumn">-7,5 E /dd</td>
-			</tr>
-			<tr>
-				<td>Noon Fee</td>
-				<td data-year="Year 2015" data-season="Spring">-5 E /nnd</td>
-				<td data-year="Year 2015" data-season="Autumn">-10 E /nnd</td>
-				<td data-year="Year 2016" data-season="Spring + Autumn">-15 E /nnd</td>
-				<td data-year="Year 2017" data-season="Spring">-20 E /nnd</td>
-				<td data-year="Year 2017" data-season="Autumn">-25 E /nnd</td>
-			</tr>			
+ 			<tr>
+				<td>After Tax Cost of Debt (%)<span data-model="Model" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM CDS Official">0.00%<span data-model="CDS" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM CDS Custom">0.00%<span data-model="CDS" class="modelHeader"></span></td>
+                <td data-period="Sep 19" data-source="DP Yield Official">0.00%<span data-model="Yield" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM Rating Official">0.00%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM Rating Custom">0.00%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="Sep 19" data-source="DP Rating Official">0.00%<span data-model="Rating" class="modelHeader"></span></td>
+			</tr>    
+ 			<tr>
+				<td>Mkt Val of Debt (CUR, MM)<span data-model="Model" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM CDS Official">0.0<span data-model="CDS" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM CDS Custom">0.0<span data-model="CDS" class="modelHeader"></span></td>
+                <td data-period="Sep 19" data-source="DP Yield Official">0.0<span data-model="Yield" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM Rating Official">0.0<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM Rating Custom">0.0<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="Sep 19" data-source="DP Rating Official">0.0<span data-model="Rating" class="modelHeader"></span></td>
+			</tr>                                 
+ 			<tr>
+				<td>Enterprise Val (%)<span data-model="Model" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM CDS Official">0%<span data-model="CDS" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM CDS Custom">0%<span data-model="CDS" class="modelHeader"></span></td>
+                <td data-period="Sep 19" data-source="DP Yield Official">0%<span data-model="Yield" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM Rating Official">0%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM Rating Custom">0%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="Sep 19" data-source="DP Rating Official">0%<span data-model="Rating" class="modelHeader"></span></td>
+			</tr> 
+ 			<tr>
+				<td>Enterprise Val (CUR, MM)<span data-model="Model" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM CDS Official">1.00<span data-model="CDS" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM CDS Custom">1.00<span data-model="CDS" class="modelHeader"></span></td>
+                <td data-period="Sep 19" data-source="DP Yield Official">1.00<span data-model="Yield" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM Rating Official">1.00<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM Rating Custom">1.00<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="Sep 19" data-source="DP Rating Official">1.00<span data-model="Rating" class="modelHeader"></span></td>
+			</tr>             
+ 			<tr>
+				<td>Enterprise Val (%)<span data-model="Model" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM CDS Official">100%<span data-model="CDS" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM CDS Custom">100%<span data-model="CDS" class="modelHeader"></span></td>
+                <td data-period="Sep 19" data-source="DP Yield Official">100%<span data-model="Yield" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM Rating Official">100%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM Rating Custom">100%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="Sep 19" data-source="DP Rating Official">100%<span data-model="Rating" class="modelHeader"></span></td>
+			</tr> 
+ 			<tr>
+				<td>Debt to Equity Ratio (%)<span data-model="Model" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM CDS Official">0%<span data-model="CDS" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM CDS Custom">0%<span data-model="CDS" class="modelHeader"></span></td>
+                <td data-period="Sep 19" data-source="DP Yield Official">0%<span data-model="Yield" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM Rating Official">0%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM Rating Custom">0%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="Sep 19" data-source="DP Rating Official">0%<span data-model="Rating" class="modelHeader"></span></td>
+			</tr>   
+ 			<tr>
+				<td>WACC<span data-model="Model" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM CDS Official">7.80%<span data-model="CDS" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM CDS Custom">7.71%<span data-model="CDS" class="modelHeader"></span></td>
+                <td data-period="Sep 19" data-source="DP Yield Official">NA<span data-model="Yield" class="modelHeader"></span></td>
+				<td data-period="Dec 19" data-source="DM Rating Official">7.69%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="19 Dec 19" data-source="DM Rating Custom">8.05%<span data-model="Rating" class="modelHeader"></span></td>
+				<td data-period="Sep 19" data-source="DP Rating Official">NA<span data-model="Rating" class="modelHeader"></span></td>
+			</tr>                                   
 		</tbody>
     </table>
 </div>

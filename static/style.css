@@ -183,7 +183,7 @@ td, th {
     }
 	
 	#wacc-results td::before {
-		content: attr(data-year);
+		content: attr(data-period);
 		display: block;
 		width: 100%;
     }
@@ -191,7 +191,7 @@ td, th {
 	#wacc-results td::after {
 		position: absolute;
 		left: 0;
-		content: attr(data-season);
+		content: attr(data-source);
     }    
 
 	span.modelHeader::after {
@@ -272,7 +272,7 @@ td, th {
     }
 	
 	#wacc-results td::before {
-		content: attr(data-year);
+		content: attr(data-period);
 		display: block;
 		width: 100%;
     }
@@ -280,7 +280,7 @@ td, th {
 	#wacc-results td::after {
 		position: absolute;
 		left: 0;
-		content: attr(data-season);
+		content: attr(data-source);
     }
 
 	span.modelHeader::after {
