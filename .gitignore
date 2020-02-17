@@ -2,4 +2,4 @@ __pycache__
 env.py
 *.pyc
 .*
-!/.gitignore
+.theia/

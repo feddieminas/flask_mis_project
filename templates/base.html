@@ -14,18 +14,18 @@
     <!-- navbar -->
     <header class="navbar bg-primary">
         <a href="{{ url_for('index') }}"> 
-            <h2 class="navbar-brand pb-1 mb-1 ml-1 ml-sm-4" id="logo">COE</h2> <!-- navbar-brand pb-1 mb-1 ml-4 -->  
+            <h2 class="navbar-brand pb-1 mb-1 ml-1 ml-sm-4 text-uppercase float-left" id="logo">COE</h2>
         </a>     
         <nav>
-            <ul id="menu">
+            <ul id="menu" class="ml-2 ml-sm-auto list-unstyled">
                 {% if current_user.is_authenticated %}
-                <li><a href="{{ url_for('file_insert') }}">MDB</a></li>  
-                <li><a href="{{ url_for('logout') }}"><span class="oi oi-account-logout"></span></a></li>
+                <li class="mr-3 float-right"><a class="text-decoration-none text-white" href="{{ url_for('logout') }}"><span class="fa fa-sign-out"  aria-hidden="true"></span></a></li>
+                <li class="mr-3 float-right"><a class="text-decoration-none text-white" href="{{ url_for('file_insert') }}">MDB</a></li>  
                 {% else %} 
-                <li><a href="{{ url_for('login') }}">Admin</a></li> 
+                <li class="mr-3 float-right"><a class="text-decoration-none text-white" href="{{ url_for('login') }}">Admin</a></li> 
                 {% endif %}   
-                <li><a href="{{ url_for('panel') }}">Panel</a></li> 
-                <li><a class="active" href="{{ url_for('index') }}">WACC</a></li>                                                
+                <li class="mr-3 float-right"><a class="text-decoration-none text-white" href="{{ url_for('panel') }}">Panel</a></li> 
+                <li class="mr-3 float-right"><a class="text-decoration-none text-white" class="active" href="{{ url_for('index') }}">WACC</a></li>                                                
             </ul>       
         </nav>    
     </header>
@@ -34,7 +34,7 @@
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for category, message in messages %}
-            <div class=alert-{{category}}>{{ message.title() }} </div>
+            <div class="alert-{{category}} pl-4 py-2 text-left">{{ message.title() }} </div>
         {% endfor %}
         {% endif %}
     {% endwith %}

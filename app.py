@@ -230,7 +230,7 @@ class Switcher(object):
         try:
             for i in range(0, self.dfdLen):
                 mongo.db.countries.update({self.dfFstCol:
-                                           self.dfd[i][self.dfFstCol]}, self.dfd[i], True) 
+                                           self.dfd[i][self.dfFstCol]}, self.dfd[i], True)
             return True
         except Exception:
             return False
@@ -240,7 +240,7 @@ class Switcher(object):
         try:
             for i in range(0, self.dfdLen):
                 mongo.db.methods.update({self.dfFstCol:
-                                         self.dfd[i][self.dfFstCol]}, self.dfd[i], True) 
+                                         self.dfd[i][self.dfFstCol]}, self.dfd[i], True)
             return True
         except Exception:
             return False
@@ -250,7 +250,7 @@ class Switcher(object):
         try:
             for i in range(0, self.dfdLen):
                 mongo.db.yearsqs.update({self.dfFstCol:
-                                         self.dfd[i][self.dfFstCol]}, self.dfd[i], True) 
+                                         self.dfd[i][self.dfFstCol]}, self.dfd[i], True)
             return True
         except Exception:
             return False
@@ -265,25 +265,31 @@ class Switcher(object):
         except Exception:
             return False
 
+    """ remained methods country taxes, betas, risk free rates, weights """
+
 
 @app.route('/admin/db_upload', methods=['POST'])
 @login_required
 def db_upload():
-    for f in request.files.getlist('db_file'):
-        myFileYesExt = f.filename
-        if myFileYesExt.endswith('csv'):
-            df = pd.read_csv(f)
-            dfFstCol = str(df.columns[0])
-            dfd = df.to_dict(orient='records')
-            MDBUpload = Switcher(dfd, dfFstCol)
-            occured = MDBUpload.strs_to_methods(
-                myFileYesExt[:myFileYesExt.index('.csv')].lower())
-            if occured:
-                flash(myFileYesExt + " Yes Inserted", "success")
+    files = request.files.getlist('db_file')
+    if not files or not any(f for f in files):
+        flash(" No File Chosen", "warning")
+    else:
+        for f in files:
+            myFileYesExt = f.filename
+            if myFileYesExt.endswith('csv'):
+                df = pd.read_csv(f)
+                dfFstCol = str(df.columns[0])
+                dfd = df.to_dict(orient='records')
+                MDBUpload = Switcher(dfd, dfFstCol)
+                occured = MDBUpload.strs_to_methods(
+                    myFileYesExt[:myFileYesExt.index('.csv')].lower())
+                if occured:
+                    flash(myFileYesExt + " Yes Inserted", "success")
+                else:
+                    flash(myFileYesExt + " Not Inserted", "danger")
             else:
-                flash(myFileYesExt + " Not Inserted", "danger")
-        else:
-            flash(myFileYesExt + " No Actions Taken", "warning")
+                flash(myFileYesExt + " No Actions Taken", "warning")
     return redirect(url_for('file_insert'))
 
 

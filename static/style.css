@@ -13,20 +13,16 @@ body {
 }
 
 h2 {
-    text-transform: uppercase;
     letter-spacing: 4px;
     color: whitesmoke;
 }
 
 #logo {
-    float:left;
     font-size: 280%;
-    margin-left: 30px;
 }
 
 #menu {
     font-size: 110%;
-    list-style-type: none;
     letter-spacing: 4px; 
 }
 
@@ -34,21 +30,7 @@ h2 {
     line-height: 45px;
 }
 
-#menu li {
-    float: right;
-    margin-right: 23px;
-}
-
-#menu a {
-    text-decoration: none;
-    color: white;
-}
-
-#menu a:hover {
-    border-bottom: 1px solid white;
-}
-
-.active {
+#menu a:hover, .active {
     border-bottom: 1px solid white;
 }
 
@@ -118,112 +100,18 @@ td, th {
     color: #aaa;
 }
 
-/* MEDIA QUERIES */
+/* MEDIA QUERIES */  
 
-@media only screen and (min-width : 320px) and (max-width : 480px) {
-
-    #menu {
-        margin-left: 8px;
-    }
-
-    /* PANEL TABLE */
-
-    /* Force table to not be like tables anymore */
-    table, thead, tbody, th, td, tr { 
-        display: block; 
-    }
-    
-    /* Hide table headers (but not display: none;, for accessibility) */
-    thead tr { 
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-    }
-    
-    tr { border: 1px solid #ccc; }
-    
-    td { 
-        /* Behave  like a "row" */
-        border: none;
-        border-bottom: 1px solid #eee; 
-        position: relative;
-        padding-left: 50%; /* maybe one day 45 or 48% */
-    }
-    
-    table.paginate td:before { 
-        /* Now like a table header */
-        position: absolute;
-        /* Top/left values mimic padding */
-        top: 6px;
-        left: 6px;
-        padding-right: 10px; 
-        white-space: nowrap;
-
-        /* Label the data */
-        content: attr(data-th) ": ";
-        font-weight: bold;
-        width: 6.5em;
-        display: inline-block;
-    }
-
-    /* WACC TABLE */
-
-	#wacc-results thead {
-        display: none;
-    }
-	
-	#wacc-results tr {
-        padding-top: 15px;
-    };
-	
-
-	#wacc-results td {
-		display: block;
-		position: relative;
-    }
-	
-	#wacc-results td::before {
-		content: attr(data-period);
-		display: block;
-		width: 100%;
-    }
-	
-	#wacc-results td::after {
-		position: absolute;
-		left: 0;
-		content: attr(data-source);
-    }    
-
-	span.modelHeader::after {
-        position: absolute;
-        right: 6px;
-        content: attr(data-model);
-    }
-
-}    
-
-@media only screen and (min-width : 481px) and (max-width: 767px ) { 
-    #menu {
-        clear: left;
-        float: left;
-        margin-left: 30px;
-        margin-bottom: 3px;
-        line-height: 25px;
-    }
+@media only screen and (min-width : 320px) and (max-width: 767px ) { 
 
     .form-inline .multiselect-container li a label.checkbox input[type=checkbox], .form-inline .multiselect-container li a label.radio input[type=radio] {
         margin-right: 2px !important;
     }
 
- 
-    /* PANEL TABLE */
-
-    /* Force table to not be like tables anymore */
     table, thead, tbody, th, td, tr { 
         display: block; 
-    }
-    
-    /* Hide table headers (but not display: none;, for accessibility) */
+    }   
+
     thead tr { 
         position: absolute;
         top: -9999px;
@@ -237,10 +125,12 @@ td, th {
         border: none;
         border-bottom: 1px solid #eee; 
         position: relative;
-        padding-left: 50%;
-    }
+        padding-left: 40%;
+    }   
+
+    /* PANEL TABLE */    
     
-    table.paginate td:before { 
+    .paginate td:before {
         /* Now like a table header */
         position: absolute;
         /* Top/left values mimic padding */
@@ -258,18 +148,14 @@ td, th {
 
     /* WACC TABLE  */
 
-	#wacc-results thead {
-        display: none;
-    }
-	
-	#wacc-results tr {
-        padding-top: 15px;
+	#wacc-results {
+        width: 85%;
+        margin-left: 7%;
     }
 
 	#wacc-results td {
-		display: block;
 		position: relative;
-    }
+    }  
 	
 	#wacc-results td::before {
 		content: attr(data-period);
@@ -283,14 +169,17 @@ td, th {
 		content: attr(data-source);
     }
 
-	span.modelHeader::after {
-        position: absolute;
-        right: 6px;
-        content: attr(data-model);
+	#wacc-results span:first-child {
+		background-color:#343a40;
+        color: white;
     }
 
+	.modelHeader::after {
+        position: absolute;
+        right: 2%;
+        content: attr(data-model);
+    }
 }   
-
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
     .form-inline .multiselect-container li a label.checkbox input[type=checkbox], .form-inline .multiselect-container li a label.radio input[type=radio] {
