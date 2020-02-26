@@ -1,10 +1,10 @@
 {% extends 'base.html' %} 
 {% block content %} 
 
-<div class="d-flex justify-content-center align-items-center mt-sm-2 mt-md-3">
-    <form class="mt-3" action="{{ url_for('login') }}" method="POST">
+<div class="d-flex justify-content-center align-items-center mt-3">
+    <form class="mt-3" action="{{ url_for('login') }}" method="POST" style="min-width:300px;">
         {{ form.csrf_token }}
-        <fieldset class="ml-3 mb-1" style="width: 165px;"><legend class="pl-1 bg-info text-white">Admin Site
+        <fieldset class="px-3 mb-1 text-center"><legend class="pl-1 bg-info text-white">Admin Site
         <span class="fa fa-sign-in mx-1"></span></legend></fieldset>
 
         <div class="form-group col">

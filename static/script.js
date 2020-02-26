@@ -20,6 +20,11 @@ $(document).ready(function() {
         $("div.alert-message").addClass("bg-light py-1 pl-4")
     };
 
+    // INDEX.HTML
+    $('#country').on("change", function() {
+        $('#tax').val(taxJSonCl[$(this).prop('selectedIndex')]["TAX"]);
+    });
+
     // PANEL.HTML - bootstrap multi-select region
     $('#regionSel').multiselect({
         buttonClass: 'btn btn-outline-dark mt-3',
@@ -31,7 +36,7 @@ $(document).ready(function() {
         nonSelectedText:'ALL REGIONS',
         buttonWidth: '222px',
         onChange: function(option, checked, select) {
-            console.log($(option), $(option).val(), checked, select);
+            console.log($(option), $(option).val(), checked, select); // print bootstrap multiselect options
         }       
     });
 
@@ -47,32 +52,27 @@ $(document).ready(function() {
                     result.push(name);
                 };
             };
-            //console.log(result);
 
             let filterselect = new Array();
             $.each($("#regionSel option"), function(i){
-                //console.log($("#regionSel option")[i].value, $("#regionSel option")[i].innerText);
                 const myTitle= $("#regionSel option")[i].innerText;
                 const anyMatch = result.filter(res => res == myTitle).length;
                 if (anyMatch) {
                     filterselect.push($("#regionSel option")[i].value);
                 };            
             }); 
-            //console.log(filterselect);
 
             $('#regionSel').multiselect('select', filterselect);
         } else {
-            // $('#regionSel').multiselect('select', ['1', '2', '3', '4', '5']); // checks at all options, opposite is deselect
+            // $('#regionSel').multiselect('select', ['1', '2', '3', '4', '5']); // bootstrap multiselect check at all options, opposite is deselect
             // $('#regionSel').multiselect('refresh');
         };     
     };
 
     // PANEL.HTML - search value on change at the table. search by country
     $('#search').on("keyup", function() {
-
         // my search value
         const searchField = $('#search').val();
-        // console.log(searchField);
         $filteredOptions.length = 0;
 
         // if nothing was entered, then return all values filtered by region

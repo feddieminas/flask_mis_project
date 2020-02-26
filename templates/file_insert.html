@@ -3,15 +3,15 @@
 {% block content %} 
 
     <div class="row float-left mt-1 mx-1 mx-sm-auto mt-sm-3" style="clear:left;position:fixed;left:calc(30% - 80px);">
-    <form id="fi-form" class="ml-2 my-2 form-inline w-74" action = "{{ url_for('db_upload') }}" method = "POST"
-         enctype = "multipart/form-data">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/> 
-        <div class="form-group">
-            <label for="db_file">File Input</label>
-            <input type="file" class="form-control-file" name = "db_file" id="db_file" multiple style="max-width: 95%;">
-        </div>
-        <input type="submit" class="btn btn-secondary"></input>
-    </form>
+        <form id="fi-form" class="ml-2 my-2 form-inline w-74" action = "{{ url_for('db_upload') }}" method = "POST"
+            enctype = "multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/> 
+            <div class="form-group">
+                <label for="db_file">File Input</label>
+                <input type="file" class="form-control-file" name = "db_file" id="db_file" multiple style="max-width: 95%;">
+            </div>
+            <input type="submit" class="btn btn-secondary"></input>
+        </form>
     </div> 
 
 {% endblock %}
