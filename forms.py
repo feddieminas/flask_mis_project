@@ -23,18 +23,13 @@ class PercentField(FloatField):
 
 
 class WACCForm(FlaskForm):
-    weights = SelectField(
-        'Risk Free Weighting',
-        choices=[('100US', '100w US'),
-                 ('40US60GE', '40w US - 60w GE'),
-                 ("10US90GE", '10w US - 90w GE')]
-    )
-    country = SelectField('Country', choices=[])
-    beta = FloatField('Beta', [InputRequired()], default=1.0)
-    mvalue_equity = FloatField('Mkt Value Equity', default=0.0)
-    yield_on_debt = PercentField('Yield On Debt', default=0.0)
-    tax = FloatField('Tax', [InputRequired()], default=0.0)
-    mvalue_debt = FloatField('Mkt Value Debt', default=0.0)
+    weights = SelectField('Risk Free Weighting', choices=[], default='100US')
+    country = SelectField('Country', choices=[], default='Greece')
+    beta = SelectField('Beta', choices=[], default='No Industry | 1')
+    mvalue_equity = FloatField('Mkt Value Equity', default=0.000)
+    yield_on_debt = PercentField('Yield On Debt', default=0.000)
+    tax = FloatField('Tax', [InputRequired()], default=0.00)
+    mvalue_debt = FloatField('Mkt Value Debt', default=0.000)
     submit = SubmitField('SUBMIT')
 
     def validate_beta(form, field):

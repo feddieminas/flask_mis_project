@@ -28,26 +28,110 @@ login = LoginManager(app)
 login.login_view = 'login'
 
 
-""" custom template filters """
+""" custom functions no pipeline """
 
 
-@app.template_filter('conv_percents')
-def percents(val):
-    return "{0:.3f}%".format(val*100)
+def weights():
+    return sorted(mongo.db.weights_i.distinct("WT"))
 
 
-""" custom functions """
+def countries():
+    return sorted(mongo.db.countries_i.distinct("COUNTRY"))
 
 
 def regions():
-    return sorted(mongo.db.countries.distinct("REGION"))
+    return sorted(mongo.db.countries_i.distinct("REGION"))
+
+
+""" custom functions yes pipeline """
+
+
+def betas():
+    return list(mongo.db.betas_i.aggregate([
+        {"$project": {"INDUSTRY_ULBETA": {"$concat":
+         ["$INDUSTRY", " | ", {"$toString": "$UNLEVERED_BETA"}]},
+         "_id": 0, "INDUSTRY": 1, "UNLEVERED_BETA": 1}}
+    ]))
+
+
+def db_weights_data():
+    pipeline = [
+        {
+            "$lookup": {
+                "from": "weights_i",
+                "localField": "WT_ID",
+                "foreignField": "ID",
+                "as": "Weights"
+            }
+        },
+        {
+            "$lookup": {
+                "from": "yearqm_i",
+                "localField": "YEARQM_ID",
+                "foreignField": "ID",
+                "as": "YearQM"
+            }
+        },
+        {
+            "$lookup": {
+                "from": "methods_i",
+                "localField": "METHOD_ID",
+                "foreignField": "ID",
+                "as": "Methods"
+            }
+        },
+        {"$unwind": "$Weights"},
+        {"$unwind": "$YearQM"},
+        {"$unwind": "$Methods"},
+        {
+            "$project": {
+                "DYEAR": "$YearQM.DYEAR",
+                "DMONTH": "$YearQM.DMONTH",
+                "DDAY": 1,
+                "WT": "$Weights.WT",
+                "METHOD": "$Methods.METHOD",
+                "CATEGORY": "$Methods.CATEGORY",
+                "TYPE": "$Methods.TYPE",
+                "WT_PRICE": 1,
+                "_id": 0
+            }
+        }
+    ]
+
+    data = list(mongo.db.weights_o.aggregate(pipeline))
+    return data
+
+
+def db_tax_data():
+    pipeline = [
+        {
+            "$lookup": {
+                "from": "countries_i",
+                "localField": "COUNTRY_ID",
+                "foreignField": "ID",
+                "as": "Country"
+            }
+        },
+        {"$unwind": "$Country"},
+        {
+            "$project": {
+                "COUNTRY": "$Country.COUNTRY",
+                "TAX": 1,
+                "_id": 0
+            }
+        },
+        {"$sort": SON([("COUNTRY", 1)])}
+    ]
+
+    data = list(mongo.db.taxes_o.aggregate(pipeline))
+    return data
 
 
 def db_data(filtering=None):
     pipeline = [
         {
             "$lookup": {
-                "from": "countries",
+                "from": "countries_i",
                 "localField": "COUNTRY_ID",
                 "foreignField": "ID",
                 "as": "Country"
@@ -55,54 +139,82 @@ def db_data(filtering=None):
         },
         {
             "$lookup": {
-                "from": "methods",
-                "localField": "METHOD_ID",
+                "from": "yearqm_i",
+                "localField": "YEARQM_ID",
                 "foreignField": "ID",
-                "as": "Method"
+                "as": "YearQM"
             }
         },
         {
             "$lookup": {
-                "from": "yearsqs",
-                "localField": "YEAR_Q_ID",
+                "from": "methods_i",
+                "localField": "METHOD_ID",
                 "foreignField": "ID",
-                "as": "YearQ"
+                "as": "Methods"
             }
         },
         {"$unwind": "$Country"},
-        {"$unwind": "$Method"},
-        {"$unwind": "$YearQ"},
+        {"$unwind": "$YearQM"},
+        {"$unwind": "$Methods"},
         {
             "$project": {
-                "YEAR": "$YearQ.YEAR",
-                "QUARTER": "$YearQ.QUARTER",
+                "DYEAR": "$YearQM.DYEAR",
+                "DMONTH": "$YearQM.DMONTH",
+                "DDAY": 1,
                 "COUNTRY": "$Country.COUNTRY",
                 "REGION": "$Country.REGION",
-                "METHOD": "$Method.Method",
-                "RATING_SPREAD": 1,
-                "ERP": 1,
-                "CRP": 1,
+                "METHOD": "$Methods.METHOD",
+                "CATEGORY": "$Methods.CATEGORY",
+                "TYPE": "$Methods.TYPE",
+                "CRP_PRICE": 1,
                 "_id": 0
             }
         },
-        {"$sort": SON([("YEAR", -1), ("QUARTER", -1), ("METHOD", 1)])}
+        {"$sort": SON([("COUNTRY", 1), ("METHOD", 1), ("CATEGORY", 1)])}
     ]
 
-    data = list(mongo.db.erpcrp.aggregate(pipeline))
+    data = list(mongo.db.crp_o.aggregate(pipeline))
     if bool(filtering):
         theRegions = regions()
         filtering = {theRegions[int(f)-1] for f in filtering if f.isdigit()}
-        data = [x for x in filterbyvalue(data, filtering)]
-
+        data = [x for x in _filterbyvalue(data, filtering)]
     return data
 
 
-def filterbyvalue(seq, values):
+def _filterbyvalue(seq, values):
     for el in seq:
         for v in values:
             if any([bool(el["COUNTRY"] == v), bool(el["REGION"] == v),
                     bool(el["METHOD"] == v)]):
                 yield el
+
+
+def _my_period_set(cr_type, y_val, m_val, d_val):
+    mdict = {1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr",
+                5: "May", 6: "Jun", 7: "Jul", 8: "Aug",
+                9: "Sep", 10: "Oct", 11: "Nov", 12: "Dec"}
+    if cr_type == "Official":
+        return "{} {}".format(mdict[int(m_val)], str(y_val)[2:])
+    else:
+        return "{} {} {}".format(d_val, mdict[int(m_val)], str(y_val)[2:])
+    return
+
+
+def _conv_percent_or_na(val):
+    return "NA" if math.isnan(val) else u"{0:.3f}%".format(val*100)
+
+
+def _wacc_calc_data(inputData):
+    """
+    if the input data is a list of dictionaries, it comes from the
+    default loaded country Greece. If we have a list of tuples, it
+    comes from the updated.
+    """
+    test = False
+    if isinstance(inputData[0], tuple):
+        wts = db_weights_data()
+        test = True
+    return test
 
 
 """ INDEX.HTML """
@@ -111,8 +223,28 @@ def filterbyvalue(seq, values):
 @app.route('/', methods=['GET'])
 def index():
     form = WACCForm()
-    form.country.choices = [(r, r) for r in regions()]
-    return render_template('index.html', form=form)
+    form.weights.choices = [(w, w) for w in weights()]
+    form.country.choices = [(c, c) for c in countries()]
+    form.beta.choices = [(b['INDUSTRY'],
+                          b['INDUSTRY_ULBETA']) for b in betas()]
+    taxJSf = db_tax_data()  # mylistOfDict
+    wts = db_weights_data()
+    print(isinstance(wts[0], dict), type(wts[0]))
+    dts = {}  # my dates to insert at the headers
+    sources = set({'DM_OFFICIAL', 'DM_CUSTOM', 'DP_OFFICIAL'})
+    for w in wts:
+        if w['METHOD'] + "_" + w['TYPE'].upper() in sources:
+            dts.update({w['METHOD'] + "_" + w['TYPE'].upper():
+                        _my_period_set(w['TYPE'], w['DYEAR'],
+                        w['DMONTH'], w['DDAY'])})
+            sources.remove(w['METHOD'] + "_" + w['TYPE'].upper())
+    """
+    # wacc function retrieve data for Greece of No Industry | 1
+    # and weight 100US
+    print(_wacc_calc_data(wts))  # will return to False
+    """
+    return render_template('index.html', form=form, taxJSonCl=taxJSf,
+                           dts=dts)
 
 
 """ WACC.JSON """
@@ -120,12 +252,28 @@ def index():
 
 @app.route('/_wacc_nums', methods=['POST'])
 def wacc_nums():
-    beta = ("beta", request.form.get('beta', 0, type=float))
+    weight = ("weight", request.form.get('weight', None, type=str))
+    country = ("country", request.form.get('country', None, type=str))
+    beta = ("beta", request.form.get('beta', 'No Industry | 1', type=str))
+    yield_on_debt = ("yield_on_debt", request.form.get('yield_on_debt', 0,
+                     type=float))
+    tax = ("tax", request.form.get('tax', 0, type=float))
+    mvalue_debt = ("mvalue_debt", request.form.get('mvalue_debt', 0,
+                   type=float))
     mvalue_equity = ("mvalue_equity", request.form.get('mvalue_equity', 0,
                      type=float))
-    weights = ("weights", request.form.get('weights', None, type=str))
-    mylist = list([beta, mvalue_equity, weights])
-    all_data = [{"name": item[0], "value": item[1]} for item in mylist]
+    mylistOfTup = list([weight, country, beta,
+                        yield_on_debt, tax, mvalue_debt, mvalue_equity])
+    print(isinstance(mylistOfTup[0], tuple), type(mylistOfTup[0]))
+    """
+    # wacc function retrieve data for selected country
+    # of tuples [('weight', '100US'), ('country', 'Greece'),
+    # ('beta', 'No Industry'), ('yield_on_debt', 0.0),
+    # ('tax', 0.0), ('mvalue_debt', 0.0), ('mvalue_equity', 0.0)]
+    print(_wacc_calc_data(mylistOfTup))  # will return to True
+    """
+    all_data = [{"name": item[0], "value": item[1]} for item in mylistOfTup]
+    print(type(all_data), type(all_data[0]))  # class list, class dict
     return jsonify(result=all_data)
 
 
@@ -141,7 +289,12 @@ def panel():
 
     crpJSf = db_data(session['f'])
 
-    page_limit = 2
+    for cr in crpJSf:
+        cr['PERIOD'] = _my_period_set(cr['TYPE'], cr['DYEAR'],
+                                      cr['DMONTH'], cr['DDAY'])
+        cr['CRP_PRICE'] = _conv_percent_or_na(cr['CRP_PRICE'])
+
+    page_limit = 25
     current_page = int(request.args.get('current_page', 1))
     total = len(crpJSf)
     pages = range(1, int(math.ceil(total / page_limit)) + 1)
@@ -204,7 +357,21 @@ def logout():
     return redirect(url_for('index'))
 
 
-""" FILE_INSERT.HTML """
+""" FILE_INSERT.HTML
+
+Approach as been that when the first column of each parsed CSV
+has distinct numbers, I use the replace_one with upsert true, as
+it auto replace and inserts updated values. When I do not have the
+first column with distinct values, but rather a group of columns,
+I reset the collection and insert the many documents, my updated ones.
+Should I have had lots of rows, my approach would have been different rather
+than the mentioned one.
+The second a approach (remove and insert) could also be used instead of replace_one.
+Another approach would have been to use the deprecated
+update function to all (instead of replace_one function and same args), where
+its functionality covers both of the above two methods.
+
+"""
 
 
 @app.route('/admin/file_insert')
@@ -225,47 +392,111 @@ class Switcher(object):
         method = getattr(self, method_name, lambda: False)
         return method()
 
-    """ Countries.csv """
-    def method_countries(self):
+    """ countries_i.csv """
+    def method_countries_i(self):
         try:
             for i in range(0, self.dfdLen):
-                mongo.db.countries.update({self.dfFstCol:
-                                           self.dfd[i][self.dfFstCol]}, self.dfd[i], True)
+                mongo.db.countries_i.replace_one({self.dfFstCol:
+                                                 self.dfd[i][self.dfFstCol]},
+                                                 self.dfd[i], True)
             return True
         except Exception:
             return False
 
-    """ Methods.csv """
-    def method_methods(self):
+    """ methods_i.csv """
+    def method_methods_i(self):
         try:
             for i in range(0, self.dfdLen):
-                mongo.db.methods.update({self.dfFstCol:
-                                         self.dfd[i][self.dfFstCol]}, self.dfd[i], True)
+                mongo.db.methods_i.replace_one({self.dfFstCol:
+                                               self.dfd[i][self.dfFstCol]},
+                                               self.dfd[i], True)
             return True
         except Exception:
             return False
 
-    """ years_qs.csv """
-    def method_years_qs(self):
+    """ yearqm_i.csv """
+    def method_yearqm_i(self):
         try:
             for i in range(0, self.dfdLen):
-                mongo.db.yearsqs.update({self.dfFstCol:
-                                         self.dfd[i][self.dfFstCol]}, self.dfd[i], True)
+                mongo.db.yearqm_i.replace_one({self.dfFstCol:
+                                              self.dfd[i][self.dfFstCol]},
+                                              self.dfd[i], True)
             return True
         except Exception:
             return False
 
-    """ erp_crp.csv """
-    def method_erp_crp(self):
+    """ betas_i.csv """
+    def method_betas_i(self):
         try:
             for i in range(0, self.dfdLen):
-                mongo.db.erpcrp.update({self.dfFstCol:
-                                        self.dfd[i][self.dfFstCol]}, self.dfd[i], True)
+                mongo.db.betas_i.replace_one({self.dfFstCol:
+                                             self.dfd[i][self.dfFstCol]},
+                                             self.dfd[i], True)
             return True
         except Exception:
             return False
 
-    """ remained methods country taxes, betas, risk free rates, weights """
+    """ weights_i.csv """
+    def method_weights_i(self):
+        try:
+            for i in range(0, self.dfdLen):
+                mongo.db.weights_i.replace_one({self.dfFstCol:
+                                               self.dfd[i][self.dfFstCol]},
+                                               self.dfd[i], True)
+            return True
+        except Exception:
+            return False
+
+    """ taxes_o.csv """
+    def method_taxes_o(self):
+        try:
+            for i in range(0, self.dfdLen):
+                mongo.db.taxes_o.replace_one({self.dfFstCol:
+                                             self.dfd[i][self.dfFstCol]},
+                                             self.dfd[i], True)
+            return True
+        except Exception:
+            return False
+
+    """ weights_o.csv """
+    def method_weights_o(self):
+        try:
+            mongo.db.weights_o.remove({})
+            for i in range(0, self.dfdLen):
+                mongo.db.weights_o.insert_one(self.dfd[i])
+            return True
+        except Exception:
+            return False
+
+    """ erp_o.csv """
+    def method_erp_o(self):
+        try:
+            mongo.db.erp_o.remove({})
+            for i in range(0, self.dfdLen):
+                mongo.db.erp_o.insert_one(self.dfd[i])
+            return True
+        except Exception:
+            return False
+
+    """ riskfree_o.csv """
+    def method_riskfree_o(self):
+        try:
+            mongo.db.riskfree_o.remove({})
+            for i in range(0, self.dfdLen):
+                mongo.db.riskfree_o.insert_one(self.dfd[i])
+            return True
+        except Exception:
+            return False
+
+    """ crp_o.csv """
+    def method_crp_o(self):
+        try:
+            mongo.db.crp_o.remove({})
+            for i in range(0, self.dfdLen):
+                mongo.db.crp_o.insert_one(self.dfd[i])
+            return True
+        except Exception:
+            return False
 
 
 @app.route('/admin/db_upload', methods=['POST'])

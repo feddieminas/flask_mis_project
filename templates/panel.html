@@ -33,31 +33,27 @@
     </div>
 </div>
 
-<div id="tbl-page" class="my-1 mb-3 my-sm-3 my-lg-4" style="overflow:scroll;">
+<div id="tbl-page" class="my-1 mb-3 my-sm-3 my-lg-4" style="overflow: scroll;">
     <table class="paginate">
         <thead>
             <tr>
-                <th>YEAR</th>
-                <th>QUARTER</th>
+                <th>PERIOD</th>
                 <th>COUNTRY</th>
                 <th>REGION</th>
                 <th>METHOD</th>
-                <th>RT_SPREAD</th>
-                <th>ERP</th>
+                <th>CATEGORY</th>
                 <th>CRP</th>
             </tr>
         </thead>
         <tbody>
         {% for cr in crpJS %}
             <tr>
-                <td data-th="YEAR" class="text-dark">{{ cr['YEAR'] }}</td>
-                <td data-th="QUARTER" class="text-dark">{{ cr['QUARTER'] }}</td>
+                <td data-th="PERIOD" class="text-dark">{{ cr['PERIOD'] }}</td>
                 <td data-th="COUNTRY" class="text-dark">{{ cr['COUNTRY'] }}</td>
                 <td data-th="REGION" class="text-dark">{{ cr['REGION'] }}</td>
-                <td data-th="METHOD" class="text-dark">{{ cr['METHOD'] }}</td>
-                <td data-th="RT_SPREAD" class="text-dark">{{ cr['RATING_SPREAD']|conv_percents }}</td>
-                <td data-th="ERP" class="text-dark">{{ cr['ERP']|conv_percents }}</td>
-                <td data-th="CRP" class="text-dark">{{ cr['CRP']|conv_percents }}</td>
+                <td data-th="METHOD" class="text-dark">{{ cr['METHOD'] }} {{ cr['TYPE'] }}</td>
+                <td data-th="CATEGORY" class="text-dark">{{ cr['CATEGORY'] }}</td>
+                <td data-th="CRP" class="text-dark">{{ cr['CRP_PRICE'] }}</td>
             </tr>
         {% endfor %}
         </tbody>
@@ -111,7 +107,7 @@
     const crpJSonCl = {{ crpJSonCl|tojson }}; 
 
     let $filteredOptions = new Array();
-    const page_limit = 2;
+    const page_limit = 25;
 
     const filtered = {{ filtered|tojson }};
 
@@ -126,14 +122,12 @@
         let output = "";
         $.each(filtPg, function(i) {
             output += '<tr>'
-            output += '<td data-th="YEAR" class="text-dark">' + filtPg[i].YEAR + '</td>'
-            output += '<td data-th="QUARTER" class="text-dark">' + filtPg[i].QUARTER + '</td>'
+            output += '<td data-th="PERIOD" class="text-dark">' + filtPg[i].PERIOD + '</td>'
             output += '<td data-th="COUNTRY" class="text-dark">' + filtPg[i].COUNTRY + '</td>'
             output += '<td data-th="REGION" class="text-dark">' + filtPg[i].REGION + '</td>'
-            output += '<td data-th="METHOD" class="text-dark">' + filtPg[i].METHOD + '</td>'
-            output += '<td data-th="RT_SPREAD" class="text-dark">' + parseFloat(filtPg[i].RATING_SPREAD*100).toFixed(3) + "%" + '</td>'
-            output += '<td data-th="ERP" class="text-dark">' + parseFloat(filtPg[i].ERP*100).toFixed(3) + "%"  + '</td>'
-            output += '<td data-th="CRP" class="text-dark">' + parseFloat(filtPg[i].CRP*100).toFixed(3) + "%"  + '</td>'
+            output += '<td data-th="METHOD" class="text-dark">' + filtPg[i].METHOD + ' ' + filtPg[i].TYPE + '</td>'
+            output += '<td data-th="CATEGORY" class="text-dark">' + filtPg[i].CATEGORY + '</td>'
+            output += '<td data-th="CRP" class="text-dark">' + filtPg[i].CRP_PRICE + '</td>'
             output += '</tr>'
         });
         $("tbody").html(output);  

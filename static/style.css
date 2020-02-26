@@ -53,7 +53,7 @@ button.multiselect, button.multiselect:hover {
 
 /* PANEL */
 
-#tbl-page tbody tr:hover {
+tbody tr:hover {
     background-color: #bee5eb;
 }
 
@@ -79,7 +79,8 @@ th {
 td, th { 
     padding: 6px; 
     border: 1px solid #ccc; 
-    text-align: left; 
+    text-align: center; 
+    vertical-align: middle;
 }
 
 /* SEARCH BUTTON */
@@ -100,6 +101,16 @@ td, th {
     color: #aaa;
 }
 
+/* FILE_INSERT.HTML */
+
+#fi-form input[type=submit] {
+    transform: translateY(25%);
+    -moz-transform: translateY(25%);
+    -webkit-transform: translateY(25%);
+    -o-transform: translateY(25%);
+    -ms-transform: translateY(25%);  
+}
+
 /* MEDIA QUERIES */  
 
 @media only screen and (min-width : 320px) and (max-width: 767px ) { 
@@ -108,11 +119,11 @@ td, th {
         margin-right: 2px !important;
     }
 
-    table, thead, tbody, th, td, tr { 
+    .paginate, .paginate thead, .paginate tbody, .paginate th, .paginate td, .paginate tr { 
         display: block; 
     }   
 
-    thead tr { 
+    .paginate thead tr { 
         position: absolute;
         top: -9999px;
         left: -9999px;
@@ -120,12 +131,12 @@ td, th {
     
     tr { border: 1px solid #ccc; }
     
-    td { 
+    .paginate td { 
         /* Behave  like a "row" */
         border: none;
         border-bottom: 1px solid #eee; 
         position: relative;
-        padding-left: 40%;
+        padding-left: 48%;
     }   
 
     /* PANEL TABLE */    
@@ -148,37 +159,15 @@ td, th {
 
     /* WACC TABLE  */
 
-	#wacc-results {
-        width: 85%;
-        margin-left: 7%;
+    #wacc-results {
+        font-size: 13px;
+        font-weight: 400;
     }
 
-	#wacc-results td {
-		position: relative;
-    }  
-	
-	#wacc-results td::before {
-		content: attr(data-period);
-		display: block;
-		width: 100%;
-    }
-	
-	#wacc-results td::after {
-		position: absolute;
-		left: 0;
-		content: attr(data-source);
-    }
+    #wacc-results thead tr:first-child { 
+        display: none;
+    }    
 
-	#wacc-results span:first-child {
-		background-color:#343a40;
-        color: white;
-    }
-
-	.modelHeader::after {
-        position: absolute;
-        right: 2%;
-        content: attr(data-model);
-    }
 }   
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
@@ -194,5 +183,9 @@ td, th {
     
     .form-inline .multiselect-container li a label.checkbox input[type=checkbox], .form-inline .multiselect-container li a label.radio input[type=radio] {
         margin-right: 2px !important;
-    }    
+    }
+
+    .paginate, #fi-form {
+        font-size: 18px;
+    }
 }
