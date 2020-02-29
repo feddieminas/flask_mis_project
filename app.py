@@ -4,24 +4,13 @@ import math
 if os.path.exists('env.py'):
     import env
 from flask import Flask, render_template, redirect, request, url_for, session, flash, jsonify
-from flask_pymongo import PyMongo
 from werkzeug.urls import url_parse
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from forms import LoginForm, WACCForm
 from bson.son import SON
 from bson.json_util import dumps
 from user import User
-from flask_wtf.csrf import CSRFProtect
-
-
-app = Flask(__name__)
-csrf = CSRFProtect(app)
-
-app.config["MONGO_DBNAME"] = 'COE'
-app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
-app.config["SECRET_KEY"] = os.urandom(16)
-
-mongo = PyMongo(app)
+from init_app import app, csrf, mongo
 
 
 """ forms """
@@ -33,27 +22,12 @@ login.login_view = 'login'
 """ custom functions no pipeline """
 
 
-def weights():
-    return sorted(mongo.db.weights_i.distinct("WT"))
-
-
-def countries():
-    return sorted(mongo.db.countries_i.distinct("COUNTRY"))
-
-
 def regions():
-    return sorted(mongo.db.countries_i.distinct("REGION"))
+    return sorted(mongo.db.countries_i.distinct("REGION",
+                  {"COUNTRY": {"$nin": ["", "null", "Null", None]}}))
 
 
 """ custom functions yes pipeline """
-
-
-def betas():
-    return list(mongo.db.betas_i.aggregate([
-        {"$project": {"INDUSTRY_ULBETA": {"$concat":
-         ["$INDUSTRY", " | ", {"$toString": "$UNLEVERED_BETA"}]},
-         "_id": 0, "INDUSTRY": 1, "UNLEVERED_BETA": 1}}
-    ]))
 
 
 def db_weights_data():
@@ -206,17 +180,27 @@ def _conv_percent_or_na(val):
     return "NA" if math.isnan(val) else u"{0:.3f}%".format(val*100)
 
 
-def _wacc_calc_data(inputData):
+def _wacc_calc_data(inputData, taxJSf=None):
     """
     if the input data is a list of dictionaries, it comes from the
     default loaded index() country Greece. If we have a list of tuples,
     it comes from the updated wacc_nums().
     """
-    test = False
     if isinstance(inputData[0], tuple):
         wts = db_weights_data()
-        test = True
-    return test
+    else:
+        # insert the defaults for Greece (list of tuples) as inputData
+        # variable.
+        wts = inputData[:]
+        tax = [t['TAX'] for i, t in enumerate(taxJSf) if
+               t['COUNTRY'].upper() == "GREECE"][0]
+        inputData = [('weight', '100US'), ('country', 'Greece'),
+                     ('beta', 'No Industry | 1'), ('yield_on_debt', 0.0),
+                     ('tax', tax), ('mvalue_debt', 0.0),
+                     ('mvalue_equity', 0.0)]
+    print(wts)
+    print(inputData)
+    return 1  # want to make it list of dicts
 
 
 """ INDEX.HTML """
@@ -225,13 +209,10 @@ def _wacc_calc_data(inputData):
 @app.route('/', methods=['GET'])
 def index():
     form = WACCForm()
-    form.weights.choices = [(w, w) for w in weights()]
-    form.country.choices = [(c, c) for c in countries()]
-    form.beta.choices = [(b['INDUSTRY'],
-                          b['INDUSTRY_ULBETA']) for b in betas()]
     taxJSf = db_tax_data()  # mylistOfDict
+    default_tax = list(filter(lambda c: c['COUNTRY'] in 'Greece',
+                              taxJSf))[0]['TAX']
     wts = db_weights_data()
-    print(isinstance(wts[0], dict), type(wts[0]))
     dts = {}  # my dates to insert at the headers
     sources = set({'DM_OFFICIAL', 'DM_CUSTOM', 'DP_OFFICIAL'})
     for w in wts:
@@ -241,12 +222,12 @@ def index():
                         w['DMONTH'], w['DDAY'])})
             sources.remove(w['METHOD'] + "_" + w['TYPE'].upper())
     """
-    # wacc function retrieve data for Greece of No Industry | 1
-    # and weight 100US
-    print(_wacc_calc_data(wts))  # will return to False
+    wacc function retrieve data for Greece of No Industry | 1
+    and weight 100US
     """
+    # print(_wacc_calc_data(wts, taxJSf))
     return render_template('index.html', form=form, taxJSonCl=taxJSf,
-                           dts=dts)
+                           dts=dts, default_tax=default_tax)
 
 
 """ WACC.JSON """
@@ -254,29 +235,30 @@ def index():
 
 @app.route('/_wacc_nums', methods=['POST'])
 def wacc_nums():
-    weight = ("weight", request.form.get('weight', None, type=str))
-    country = ("country", request.form.get('country', None, type=str))
-    beta = ("beta", request.form.get('beta', 'No Industry | 1', type=str))
-    yield_on_debt = ("yield_on_debt", request.form.get('yield_on_debt', 0,
-                     type=float))
-    tax = ("tax", request.form.get('tax', 0, type=float))
-    mvalue_debt = ("mvalue_debt", request.form.get('mvalue_debt', 0,
-                   type=float))
-    mvalue_equity = ("mvalue_equity", request.form.get('mvalue_equity', 0,
-                     type=float))
-    mylistOfTup = list([weight, country, beta,
-                        yield_on_debt, tax, mvalue_debt, mvalue_equity])
-    print(isinstance(mylistOfTup[0], tuple), type(mylistOfTup[0]))
-    """
-    # wacc function retrieve data for selected country
-    # of tuples [('weight', '100US'), ('country', 'Greece'),
-    # ('beta', 'No Industry'), ('yield_on_debt', 0.0),
-    # ('tax', 0.0), ('mvalue_debt', 0.0), ('mvalue_equity', 0.0)]
-    print(_wacc_calc_data(mylistOfTup))  # will return to True
-    """
-    all_data = [{"name": item[0], "value": item[1]} for item in mylistOfTup]
-    print(type(all_data), type(all_data[0]))  # class list, class dict
-    return jsonify(result=all_data)
+    form = WACCForm(item=request.get_json())
+    mylistOfTup = []
+    if form.validate_on_submit():
+        for key, value in form.data.items():
+            if any(k == key for k in ["weights", "country", "beta"]):
+                mylistOfTup.append((key, str(value)))
+            else:
+                mylistOfTup.append((key, None if value in ['', None]
+                                    else float(value)))
+        """
+        wacc function retrieve data for selected country
+        of tuples [('weight', '100US'), ('country', 'Greece'),
+        ('beta', 'No Industry'), ('yield_on_debt', 0.0),
+        ('tax', 0.0), ('mvalue_debt', 0.0), ('mvalue_equity', 0.0)]
+        print(_wacc_calc_data(mylistOfTup))  # will return to True
+        """
+        # print(_wacc_calc_data(mylistOfTup))
+        all_data = [{"name": item[0], "value": item[1]}  # will return it from wacc function
+                    for item in mylistOfTup]
+        print(type(all_data), type(all_data[0]))  # class list, class dict
+        return jsonify(result=all_data)
+    else:
+        flash("Wrong Input Data. Please Try Again", "danger")
+        return redirect(url_for('index'))
 
 
 """ PANEL.HTML """
@@ -397,10 +379,9 @@ class Switcher(object):
     """ countries_i.csv """
     def method_countries_i(self):
         try:
+            mongo.db.countries_i.delete_many({"ID": {"$gte": 0}})
             for i in range(0, self.dfdLen):
-                mongo.db.countries_i.replace_one({self.dfFstCol:
-                                                 self.dfd[i][self.dfFstCol]},
-                                                 self.dfd[i], True)
+                mongo.db.countries_i.insert_one(self.dfd[i])
             return True
         except Exception:
             return False
@@ -408,10 +389,9 @@ class Switcher(object):
     """ methods_i.csv """
     def method_methods_i(self):
         try:
+            mongo.db.methods_i.delete_many({"ID": {"$gte": 0}})
             for i in range(0, self.dfdLen):
-                mongo.db.methods_i.replace_one({self.dfFstCol:
-                                               self.dfd[i][self.dfFstCol]},
-                                               self.dfd[i], True)
+                mongo.db.methods_i.insert_one(self.dfd[i])
             return True
         except Exception:
             return False
@@ -419,10 +399,9 @@ class Switcher(object):
     """ yearqm_i.csv """
     def method_yearqm_i(self):
         try:
+            mongo.db.yearqm_i.delete_many({"ID": {"$gte": 0}})
             for i in range(0, self.dfdLen):
-                mongo.db.yearqm_i.replace_one({self.dfFstCol:
-                                              self.dfd[i][self.dfFstCol]},
-                                              self.dfd[i], True)
+                mongo.db.yearqm_i.insert_one(self.dfd[i])
             return True
         except Exception:
             return False
@@ -430,10 +409,9 @@ class Switcher(object):
     """ betas_i.csv """
     def method_betas_i(self):
         try:
+            mongo.db.betas_i.delete_many({"ID": {"$gte": 0}})
             for i in range(0, self.dfdLen):
-                mongo.db.betas_i.replace_one({self.dfFstCol:
-                                             self.dfd[i][self.dfFstCol]},
-                                             self.dfd[i], True)
+                mongo.db.betas_i.insert_one(self.dfd[i])
             return True
         except Exception:
             return False
@@ -441,10 +419,9 @@ class Switcher(object):
     """ weights_i.csv """
     def method_weights_i(self):
         try:
+            mongo.db.weights_i.delete_many({"ID": {"$gte": 0}})
             for i in range(0, self.dfdLen):
-                mongo.db.weights_i.replace_one({self.dfFstCol:
-                                               self.dfd[i][self.dfFstCol]},
-                                               self.dfd[i], True)
+                mongo.db.weights_i.insert_one(self.dfd[i])
             return True
         except Exception:
             return False
@@ -452,10 +429,8 @@ class Switcher(object):
     """ taxes_o.csv """
     def method_taxes_o(self):
         try:
-            for i in range(0, self.dfdLen):
-                mongo.db.taxes_o.replace_one({self.dfFstCol:
-                                             self.dfd[i][self.dfFstCol]},
-                                             self.dfd[i], True)
+            mongo.db.taxes_o.delete_many({"COUNTRY_ID": {"$gte": 0}})
+            mongo.db.taxes_o.insert_many(self.dfd)
             return True
         except Exception:
             return False
@@ -463,9 +438,8 @@ class Switcher(object):
     """ weights_o.csv """
     def method_weights_o(self):
         try:
-            mongo.db.weights_o.remove({})
-            for i in range(0, self.dfdLen):
-                mongo.db.weights_o.insert_one(self.dfd[i])
+            mongo.db.weights_o.delete_many({"WT_ID": {"$gte": 0}})
+            mongo.db.weights_o.insert_many(self.dfd)
             return True
         except Exception:
             return False
@@ -473,9 +447,8 @@ class Switcher(object):
     """ erp_o.csv """
     def method_erp_o(self):
         try:
-            mongo.db.erp_o.remove({})
-            for i in range(0, self.dfdLen):
-                mongo.db.erp_o.insert_one(self.dfd[i])
+            mongo.db.erp_o.delete_many({"WT_ID": {"$gte": 0}})
+            mongo.db.erp_o.insert_many(self.dfd)
             return True
         except Exception:
             return False
@@ -483,9 +456,8 @@ class Switcher(object):
     """ riskfree_o.csv """
     def method_riskfree_o(self):
         try:
-            mongo.db.riskfree_o.remove({})
-            for i in range(0, self.dfdLen):
-                mongo.db.riskfree_o.insert_one(self.dfd[i])
+            mongo.db.riskfree_o.delete_many({"COUNTRY_ID": {"$gte": 0}})
+            mongo.db.riskfree_o.insert_many(self.dfd)
             return True
         except Exception:
             return False
@@ -493,9 +465,8 @@ class Switcher(object):
     """ crp_o.csv """
     def method_crp_o(self):
         try:
-            mongo.db.crp_o.remove({})
-            for i in range(0, self.dfdLen):
-                mongo.db.crp_o.insert_one(self.dfd[i])
+            mongo.db.crp_o.delete_many({"COUNTRY_ID": {"$gte": 0}})
+            mongo.db.crp_o.insert_many(self.dfd)
             return True
         except Exception:
             return False

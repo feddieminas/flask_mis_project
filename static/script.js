@@ -22,8 +22,24 @@ $(document).ready(function() {
 
     // INDEX.HTML
     $('#country').on("change", function() {
-        $('#tax').val(taxJSonCl[$(this).prop('selectedIndex')]["TAX"]);
+        $('#tax').val(0);
+        taxJSonCl.forEach((e, i) => {
+            if(e.COUNTRY==$('#country').val()) {
+                $('#tax').val(e.TAX);
+                return false
+            }
+        });
     });
+
+    $('#beta').on("change", function() {
+        if ($(this).children("option:selected").val() === "0") {
+            $("#beta_manual").prop('disabled', false);
+            $("#beta_manual").val("0.00");
+        } else {
+            $("#beta_manual").prop('disabled', true);
+            $("#beta_manual").val(null);
+        }
+    });    
 
     // PANEL.HTML - bootstrap multi-select region
     $('#regionSel').multiselect({
@@ -41,7 +57,6 @@ $(document).ready(function() {
     });
 
     if (typeof filtered !== 'undefined') {
-        console.log(filtered);
         if (filtered) {
             let lookup = {};
             let result = new Array();

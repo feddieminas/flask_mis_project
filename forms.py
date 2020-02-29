@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField, FloatField
-from wtforms import SubmitField
-from wtforms.validators import DataRequired, InputRequired, ValidationError
+from wtforms.validators import DataRequired, Optional, InputRequired
+from wtforms.widgets import html5
+from init_app import mongo
 
 """ LOGIN """
 
@@ -13,25 +14,73 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
 
 
-class PercentField(FloatField):
-    def process_formdata(self, value):
-        if value is None:
-            self.data = value.strip('%').replace(',', '.')
-        else:
-            self.data = 0
-        super(PercentField).process_formdata(self.data)
+""" WACC """
+
+
+def countries():
+    myctrs = sorted(mongo.db.countries_i.distinct("COUNTRY",
+                    {"COUNTRY": {"$nin": ["", "null", "Null", None]}}))
+    return [(c, c) for c in myctrs]
+
+
+def weights():
+    mywts = sorted(mongo.db.weights_i.distinct("WT"))
+    return [(w, w) for w in mywts]
+
+
+def betas():
+    mybts = list(mongo.db.betas_i.aggregate([
+        {"$project":
+            {"INDUSTRY_ULBETA":
+                {"$concat":
+                    ["$INDUSTRY",
+                     {"$cond": [{"$eq": ["$INDUSTRY", "Manual"]}, "", " | "]},
+                     {"$cond": [{"$eq": ["$INDUSTRY", "Manual"]}, "",
+                                {"$toString": "$UNLEVERED_BETA"}]}
+                     ]
+                 },
+                "_id": 0,
+                "ID": {"$toInt": "$ID"},
+                "UNLEVERED_BETA": 1
+             }
+         }
+    ]))
+    return [(b['ID'], b['INDUSTRY_ULBETA']) for b in mybts]
+
+
+class PassSelectField(SelectField):
+    def pre_validate(self, form):
+        pass
+
+
+class FlexiFloatField(FloatField):
+    def process_formdata(self, valuelist):
+        if valuelist:
+            valuelist[0] = valuelist[0].replace(",", ".")
+        return super(FlexiFloatField, self).process_formdata(valuelist)
 
 
 class WACCForm(FlaskForm):
-    weights = SelectField('Risk Free Weighting', choices=[], default='100US')
-    country = SelectField('Country', choices=[], default='Greece')
-    beta = SelectField('Beta', choices=[], default='No Industry | 1')
-    mvalue_equity = FloatField('Mkt Value Equity', default=0.000)
-    yield_on_debt = PercentField('Yield On Debt', default=0.000)
-    tax = FloatField('Tax', [InputRequired()], default=0.00)
-    mvalue_debt = FloatField('Mkt Value Debt', default=0.000)
-    submit = SubmitField('SUBMIT')
-
-    def validate_beta(form, field):
-        if field.data < 0:
-            raise ValidationError("Negative beta not applied")
+    weights = SelectField('Risk Free Weighting', choices=weights(),
+                          default=u'100US', coerce=str)
+    country = SelectField('Country', choices=countries(), default=u'Greece',
+                          coerce=str)
+    beta = PassSelectField('Beta', choices=betas(), default='1', coerce=str)
+    beta_manual = FlexiFloatField('Beta Manual', validators=[Optional()],
+                                  default=None, render_kw={'disabled': ''},
+                                  widget=html5.NumberInput(step=0.01))
+    yield_on_debt = FlexiFloatField('Yield On Debt %',
+                                    validators=[InputRequired()],
+                                    default=0.0,
+                                    render_kw={"placeholder": "%"},
+                                    widget=html5.NumberInput(step=0.01))
+    tax = FlexiFloatField('Tax %', validators=[InputRequired()],
+                          default=0.0, render_kw={"placeholder": "%"},
+                          widget=html5.NumberInput(min=0, max=100, step=0.01))
+    mvalue_debt = FlexiFloatField('Mkt Value Debt',
+                                  validators=[InputRequired()], default=0.0,
+                                  widget=html5.NumberInput(step=0.001))
+    mvalue_equity = FlexiFloatField('Mkt Value Equity',
+                                    validators=[InputRequired()],
+                                    default=0.0,
+                                    widget=html5.NumberInput(step=0.001))

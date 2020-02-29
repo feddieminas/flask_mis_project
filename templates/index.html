@@ -3,8 +3,8 @@
 {% block content %}
 
 <div class="d-flex justify-content-start align-items-start mt-sm-2">
-    <form id="wacc_inputs" class="mt-3 mt-sm-2" method="POST" action="{{ url_for('wacc_nums') }}" style="max-width: 1500px;width: 950px;">
-        {{ form.csrf_token }}    
+    <form id="wacc_inputs" class="mt-3 mt-sm-2" method="POST" action="{{ url_for('wacc_nums') }}" style="max-width: 1500px;width: 950px;">   
+        {{ form.csrf_token }}
         <fieldset class="mb-1" style="width: 110px;"><legend class="pl-1 bg-primary text-white">WACC
             <span class="fa fa-calculator mx-1"></span></legend></fieldset>
         
@@ -12,12 +12,15 @@
             <div class="form-group col-md-3">
                 {{ form.weights.label }} {{ form.weights(class_="form-control") }}
             </div>         
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 {{ form.country.label }} {{ form.country(class_="form-control") }}
             </div>                     
-            <div class="form-group col-md-5">        
+            <div class="form-group col-md-4">        
                 {{ form.beta.label }} {{ form.beta(class_="form-control") }}
-            </div>              
+            </div>      
+            <div class="form-group col-md-2">        
+                {{ form.beta_manual.label }} {{ form.beta_manual(class_="form-control") }}
+            </div>                     
         </div>       
 
         <div class="form-row">         
@@ -25,7 +28,7 @@
                 {{ form.yield_on_debt.label }} {{ form.yield_on_debt(class_="form-control") }}
             </div>
             <div class="form-group col-md-3">                    
-                {{ form.tax.label }} {{ form.tax(class_="form-control") }}
+                {{ form.tax.label }} {{ form.tax(class_="form-control", value=default_tax) }}
             </div>    
             <div class="form-group col-md-3">        
                 {{ form.mvalue_debt.label }} {{ form.mvalue_debt(class_="form-control") }}
@@ -35,7 +38,7 @@
             </div>            
         </div>         
 
-        {{ form.submit(class_="btn btn-primary") }}
+        <button type="submit" class="btn btn-primary">SUBMIT</button>
     </form>
 </div>
 
@@ -231,20 +234,31 @@
 <script type="text/javascript">
     const taxJSonCl = {{ taxJSonCl|tojson }};
 
+    const csrf_token = $('#csrf_token').val();
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+            }
+        }
+    });
+
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     $('#wacc_inputs').on('submit', function(e) {
         $.ajax({
-            data : {
-                weight: $('#weights').children("option:selected").val(),
-                country: $('#country').children("option:selected").val(),
-                beta: $('#beta').children("option:selected").val(),
-                yield_on_debt: $('input[name="yield_on_debt"]').val(),
-                tax: $('input[name="tax"]').val(),
-                mvalue_debt: $('input[name="mvalue_debt"]').val(),
-                mvalue_equity: $('input[name="mvalue_equity"]').val()
-            },
             type : 'POST',
-            url : $SCRIPT_ROOT + '/_wacc_nums'
+            url : $SCRIPT_ROOT + '/_wacc_nums',
+            contentType: "application/json",
+            data : JSON.stringify({
+                    "weights": $('#weights').children("option:selected").val(),
+                    "country": $('#country').children("option:selected").val(),
+                    "beta": $('#beta').children("option:selected").text(),
+                    "beta_manual": $('#beta_manual').val(),
+                    "yield_on_debt": $('input[name="yield_on_debt"]').val(),
+                    "tax": $('input[name="tax"]').val(),
+                    "mvalue_debt": $('input[name="mvalue_debt"]').val(),
+                    "mvalue_equity": $('input[name="mvalue_equity"]').val()
+                })
             })
             .done(function(data) {
                 console.log(data);
