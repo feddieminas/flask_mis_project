@@ -24,8 +24,8 @@ def countries():
 
 
 def weights():
-    mywts = sorted(mongo.db.weights_i.distinct("WT"))
-    return [(w, w) for w in mywts]
+    mywts = mongo.db.weights_i.find({}, {"_id": 0, "WT": 1}).sort([("ID", 1)])
+    return [(str(i+1), w['WT']) for i, w in enumerate(mywts)]
 
 
 def betas():
@@ -61,8 +61,8 @@ class FlexiFloatField(FloatField):
 
 
 class WACCForm(FlaskForm):
-    weights = SelectField('Risk Free Weighting', choices=weights(),
-                          default=u'100US', coerce=str)
+    weights = PassSelectField('Risk Free Weighting', choices=weights(),
+                              default='1', coerce=str)
     country = SelectField('Country', choices=countries(), default=u'Greece',
                           coerce=str)
     beta = PassSelectField('Beta', choices=betas(), default='1', coerce=str)
@@ -76,7 +76,7 @@ class WACCForm(FlaskForm):
                                     widget=html5.NumberInput(step=0.01))
     tax = FlexiFloatField('Tax %', validators=[InputRequired()],
                           default=0.0, render_kw={"placeholder": "%"},
-                          widget=html5.NumberInput(min=0, max=100, step=0.01))
+                          widget=html5.NumberInput(min=0, max=100, step=0.1))
     mvalue_debt = FlexiFloatField('Mkt Value Debt',
                                   validators=[InputRequired()], default=0.0,
                                   widget=html5.NumberInput(step=0.001))

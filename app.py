@@ -19,6 +19,14 @@ login = LoginManager(app)
 login.login_view = 'login'
 
 
+""" custom template filters
+@app.template_filter('conv_percents')
+def percents(val):
+    return "{0:.3f}%".format(val*100)
+cr['ERP']|conv_percents
+"""
+
+
 """ custom functions no pipeline """
 
 
@@ -180,7 +188,7 @@ def _conv_percent_or_na(val):
     return "NA" if math.isnan(val) else u"{0:.3f}%".format(val*100)
 
 
-def _wacc_calc_data(inputData, taxJSf=None):
+def _wacc_calc_data(inputData, tax=None):
     """
     if the input data is a list of dictionaries, it comes from the
     default loaded index() country Greece. If we have a list of tuples,
@@ -192,12 +200,10 @@ def _wacc_calc_data(inputData, taxJSf=None):
         # insert the defaults for Greece (list of tuples) as inputData
         # variable.
         wts = inputData[:]
-        tax = [t['TAX'] for i, t in enumerate(taxJSf) if
-               t['COUNTRY'].upper() == "GREECE"][0]
-        inputData = [('weight', '100US'), ('country', 'Greece'),
-                     ('beta', 'No Industry | 1'), ('yield_on_debt', 0.0),
-                     ('tax', tax), ('mvalue_debt', 0.0),
-                     ('mvalue_equity', 0.0)]
+        inputData = [('weights', '100US'), ('country', 'Greece'),
+                     ('beta', 'No Industry | 1'), ('beta_manual', None),
+                     ('yield_on_debt', 0.0), ('tax', tax),
+                     ('mvalue_debt', 0.0), ('mvalue_equity', 0.0)]
     print(wts)
     print(inputData)
     return 1  # want to make it list of dicts
@@ -210,8 +216,9 @@ def _wacc_calc_data(inputData, taxJSf=None):
 def index():
     form = WACCForm()
     taxJSf = db_tax_data()  # mylistOfDict
-    default_tax = list(filter(lambda c: c['COUNTRY'] in 'Greece',
-                              taxJSf))[0]['TAX']
+    default_tax = "{0:.1f}".format(
+                   float(list(filter(lambda c: c['COUNTRY'].upper()
+                              in 'GREECE', taxJSf))[0]['TAX'] * 100))
     wts = db_weights_data()
     dts = {}  # my dates to insert at the headers
     sources = set({'DM_OFFICIAL', 'DM_CUSTOM', 'DP_OFFICIAL'})
@@ -226,8 +233,11 @@ def index():
     and weight 100US
     """
     # print(_wacc_calc_data(wts, taxJSf))
+    wacc_data = [{'td1': '2.00%', 'td2': '1.93%'},
+                 {'td1': 1.00, 'td2': 1.01}]
     return render_template('index.html', form=form, taxJSonCl=taxJSf,
-                           dts=dts, default_tax=default_tax)
+                           dts=dts, default_tax=default_tax,
+                           wacc_data=wacc_data)
 
 
 """ WACC.JSON """
@@ -236,29 +246,28 @@ def index():
 @app.route('/_wacc_nums', methods=['POST'])
 def wacc_nums():
     form = WACCForm(item=request.get_json())
+    print(form.weights.data, form.validate_on_submit())
     mylistOfTup = []
     if form.validate_on_submit():
         for key, value in form.data.items():
             if any(k == key for k in ["weights", "country", "beta"]):
                 mylistOfTup.append((key, str(value)))
+            elif (key == 'csrf_token'):
+                continue
             else:
                 mylistOfTup.append((key, None if value in ['', None]
                                     else float(value)))
         """
         wacc function retrieve data for selected country
-        of tuples [('weight', '100US'), ('country', 'Greece'),
-        ('beta', 'No Industry'), ('yield_on_debt', 0.0),
-        ('tax', 0.0), ('mvalue_debt', 0.0), ('mvalue_equity', 0.0)]
-        print(_wacc_calc_data(mylistOfTup))  # will return to True
+        of tuples
         """
+        print(mylistOfTup)
         # print(_wacc_calc_data(mylistOfTup))
-        all_data = [{"name": item[0], "value": item[1]}  # will return it from wacc function
-                    for item in mylistOfTup]
-        print(type(all_data), type(all_data[0]))  # class list, class dict
-        return jsonify(result=all_data)
+        wacc_data = [{'td1': '2.00%', 'td2': '1.93%'},
+                     {'td1': 1.00, 'td2': 1.01}]
+        return jsonify(wacc_data=wacc_data)
     else:
-        flash("Wrong Input Data. Please Try Again", "danger")
-        return redirect(url_for('index'))
+        return jsonify(wacc_data=None)
 
 
 """ PANEL.HTML """
@@ -343,17 +352,11 @@ def logout():
 
 """ FILE_INSERT.HTML
 
-Approach as been that when the first column of each parsed CSV
-has distinct numbers, I use the replace_one with upsert true, as
-it auto replace and inserts updated values. When I do not have the
-first column with distinct values, but rather a group of columns,
-I reset the collection and insert the many documents, my updated ones.
-Should I have had lots of rows, my approach would have been different rather
-than the mentioned one.
-The second a approach (remove and insert) could also be used instead of replace_one.
-Another approach would have been to use the deprecated
-update function to all (instead of replace_one function and same args), where
-its functionality covers both of the above two methods.
+Upload a csv file (or multiple) with a specific name (as method arg)
+and an extension of _ and eight value secret key, which
+you define on env vars. We reset the collection and insert
+the new ones. Two approaches were shown below, insert_one and
+insert_many. Equally all approaches can go to different methods. 
 
 """
 
@@ -483,7 +486,7 @@ def db_upload():
         for f in files:
             myFileYesExt = f.filename
             if myFileYesExt.endswith('csv') and f_secret in myFileYesExt:
-                df = pd.read_csv(f)
+                df = pd.read_csv(f, sep=';')
                 dfFstCol = str(df.columns[0])
                 dfd = df.to_dict(orient='records')
                 MDBUpload = Switcher(dfd, dfFstCol)

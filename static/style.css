@@ -12,22 +12,16 @@ body {
     border:0;
 }
 
-h2 {
+.navbar-brand {
     letter-spacing: 4px;
-    color: whitesmoke;
-}
-
-#logo {
     font-size: 280%;
+    line-height: 45px;
 }
 
 #menu {
     font-size: 110%;
-    letter-spacing: 4px; 
-}
-
-#logo, #menu {
-    line-height: 45px;
+    letter-spacing: 4px;
+    line-height: 45px; 
 }
 
 #menu a:hover, .active {
@@ -120,7 +114,8 @@ td, th {
     }
 
     .paginate, .paginate thead, .paginate tbody, .paginate th, .paginate td, .paginate tr { 
-        display: block; 
+        display: block;
+        font-size: 1.02rem;
     }   
 
     .paginate thead tr { 
@@ -179,13 +174,10 @@ td, th {
 @media only screen and (min-width: 992px) {
     td, th {
         max-width: 140px;
+        width: 100px;
     }
     
     .form-inline .multiselect-container li a label.checkbox input[type=checkbox], .form-inline .multiselect-container li a label.radio input[type=radio] {
         margin-right: 2px !important;
-    }
-
-    .paginate, #fi-form {
-        font-size: 18px;
     }
 }

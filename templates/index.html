@@ -42,7 +42,7 @@
     </form>
 </div>
 
-<div class="my-2 mb-3 my-sm-3 my-lg-4" style="overflow: scroll; min-width: 295px;">
+<div class="my-2 mb-3 my-sm-3 my-lg-4" style="overflow:scroll; min-width:295px;">
     <table id="wacc-results">
         <thead>
 			<tr>
@@ -72,8 +72,8 @@
 		<tbody>
 			<tr class="pt-1 pt-sm-1 pt-md-0">
 				<td>Weight RF Rate (A)</span></td>
-				<td>2.00%</td>
-				<td>1.93%</td>
+				<td>{{ wacc_data[0]['td1'] }}</td>
+				<td>{{ wacc_data[0]['td2'] }}</td>
                 <td>1.67%</td>
 				<td>2.00%</td>
 				<td>1.93%</td>
@@ -81,8 +81,8 @@
 			</tr>
 			<tr class="pt-1 pt-sm-1 pt-md-0">
 				<td>Unlevered Industry Beta</td>
-				<td>1.00</td>
-				<td>1.00</td>
+				<td>{{ wacc_data[1]['td1'] }}</td>
+				<td>{{ wacc_data[1]['td2'] }}</td>
                 <td>1.00</td>
 				<td>1.00</td>
 				<td>1.00</td>
@@ -248,9 +248,10 @@
         $.ajax({
             type : 'POST',
             url : $SCRIPT_ROOT + '/_wacc_nums',
+            async : true,
             contentType: "application/json",
             data : JSON.stringify({
-                    "weights": $('#weights').children("option:selected").val(),
+                    "weights": $('#weights').children("option:selected").text(),
                     "country": $('#country').children("option:selected").val(),
                     "beta": $('#beta').children("option:selected").text(),
                     "beta_manual": $('#beta_manual').val(),
@@ -260,20 +261,39 @@
                     "mvalue_equity": $('input[name="mvalue_equity"]').val()
                 })
             })
-            .done(function(data) {
-                console.log(data);
-                $.each(data.result, function(key, item) {
-                    console.log(item.name);
-                    console.log(item.value);
-                });
+            .done(function(data, status, xhr) {
+                if (data.wacc_data && data.wacc_data.length) {
+                    console.log(data);
 
-                //$("#wacc-results tr").each(function (i, val) {      
-                    //$(this).children("td").each(function (j, val) {    
-                        //console.log(val.innerText); //index 0
-                        //val.innerText = 9999;           
+                    $.each(data.wacc_data, function(i, item) {
+                        console.log(i);
+                        console.log(item.td1);
+                        console.log(item.td2);
+                    });
+
+                    //$("#wacc-results tr").each(function (i, val) {      
+                        //$(this).children("td").each(function (j, val) {    
+                            //console.log(val.innerText); //index 0
+                            //val.innerText = 9999;           
+                        //});
                     //});
-                //});
-            });
+                    
+                    if ($('header + div.alert-danger').length) {
+                        $("header + div.alert-danger").remove();
+                    }
+
+                    return true
+                } else {
+
+                    if ($('header + div.alert-danger').length == 0) {
+                        $("header").after("<div class='alert-danger pl-4 py-2 text-left'>Wrong Input Data. Please Try Again </div>");
+                    }
+
+                    return false
+                }
+            })
+            .fail(function(xhr, status, err) {})
+            .always(function(xhrOrData, textStatus, xhrOrErr) {})
         e.preventDefault();
     });
 

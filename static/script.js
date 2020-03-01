@@ -1,4 +1,15 @@
 $(document).ready(function() {
+    
+    //Ipad pro font-size due to height
+    $(window).on('resize', function(){
+        const h = window.innerHeight;
+        if (h >= 1100) {
+            $("body").css({'font-size' : '1.23rem'});
+        }
+        else {
+            $("body").css({'font-size' : 'inherit'});
+        }
+    }).resize();
 
     const current = location.pathname;
 
@@ -25,7 +36,7 @@ $(document).ready(function() {
         $('#tax').val(0);
         taxJSonCl.forEach((e, i) => {
             if(e.COUNTRY==$('#country').val()) {
-                $('#tax').val(e.TAX);
+                $('#tax').val((e.TAX * 100).toFixed(1));
                 return false
             }
         });

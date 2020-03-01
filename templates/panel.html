@@ -5,7 +5,7 @@
 <form class="form-inline mt-0 mt-sm-2" action="{{ url_for('filtering') }}" method="POST">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <div class="form-group row">
-        <div class="col-sm-auto pr-0 w-80" style="width: 238px;">
+        <div class="col-sm-auto pr-0 w-80" style="width:238px;">
            <select id="regionSel" name="region_options" multiple>
                 {% for r in regions %}
                     <option value={{ loop.index }}>{{ r }}</option>
@@ -14,8 +14,7 @@
         </div>
 
         <div class="col-auto ml-1 mt-2 mt-sm-0 px-0">
-            <button class="btn btn-primary mt-2 mt-sm-3 mt-md-3 mt-lg-3 px-2 px-sm-3" type="submit" name="action" style="
-            font-size: 15px;">SUBMIT</button>
+            <button class="btn btn-primary mt-2 mt-sm-3 mt-md-3 mt-lg-3 px-2 px-sm-3 pb-2" type="submit" name="action" style="font-size:14px;letter-spacing: 1px;">SUBMIT</button>
         </div>
     </div>
 </form>
@@ -24,17 +23,17 @@
     <div class="form-group row has-search">
         <div class="col-sm-auto pr-0 w-75 d-inline">
             <span class="fa fa-search form-control-feedback"></span>
-            <label class="mb-2 px-1 d-block" for="search" style="margin-left: 1px; width: 80px; height: 24px; background-color: #48929b; color: white;">COUNTRY</label>
+            <label class="mb-2 px-1 d-block bg-info text-white text-center" for="search" style="margin-left:1px;width: 135px;max-width:135px;min-width:112px;max-height:26px;letter-spacing:1px;">COUNTRY<i class="fa fa-flag ml-2" aria-hidden="true"></i></label>
             <input id="search" name="search_val" value="" type="text" class="form-control col-12 col-sm-auto" style="width: 225px;" placeholder="Search"/>
         </div>
     
-        <div class="col-auto ml-1 pl-0" style="margin-top: 32px;">
-            <button id="search_btn" class="btn btn-secondary px-1 px-sm-3" style="width: 55px;" name="action" disabled>GO</button>
+        <div class="col-auto ml-1 pl-0" style="margin-top:32px;">
+            <button id="search_btn" class="btn btn-secondary px-1 px-sm-3" style="width:55px;letter-spacing:1px;" name="action" disabled>GO</button>
         </div>
     </div>
 </div>
 
-<div id="tbl-page" class="my-1 mb-3 my-sm-3 my-lg-4" style="overflow: scroll;">
+<div class="my-1 mb-3 my-sm-3 my-lg-4" style="overflow:scroll;max-height:990px;height:990px;min-height:880px;">
     <table class="paginate">
         <thead>
             <tr>
