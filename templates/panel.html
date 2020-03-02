@@ -134,7 +134,8 @@
             output += '<td data-th="REGION" class="text-dark">' + filtPg[i].REGION + '</td>'
             output += '<td data-th="METHOD" class="text-dark">' + filtPg[i].METHOD + ' ' + filtPg[i].TYPE + '</td>'
             output += '<td data-th="CATEGORY" class="text-dark">' + filtPg[i].CATEGORY + '</td>'
-            output += '<td data-th="CRP" class="text-dark">' + filtPg[i].CRP_PRICE + '</td>'
+            output += '<td title="" data-th="CRP" class="text-dark">' + filtPg[i].CRP_PRICE +
+            '<span class="spnTooltip bg-light text-dark">CRP</span>' + '</td>'
             output += '</tr>'
         });
         $("tbody").html(output);  
