@@ -140,5 +140,5 @@ $(document).ready(function() {
         // fire up the first page
         $('a.page-link')[1].click();
     });  
-    
+
 });

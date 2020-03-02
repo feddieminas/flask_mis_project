@@ -6,7 +6,7 @@ if os.path.exists('env.py'):
 from flask import Flask, render_template, redirect, request, url_for, session, flash, jsonify
 from werkzeug.urls import url_parse
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
-from forms import LoginForm, WACCForm
+from forms import LoginForm, WACCForm, betas
 from bson.son import SON
 from bson.json_util import dumps
 from user import User
@@ -298,7 +298,8 @@ def panel():
     return render_template('panel.html', crpJS=crpJS,
                            crpJSonCl=crpJSf,
                            current_page=current_page, pages=pages,
-                           regions=regions(), filtered=filtered)
+                           regions=regions(), betas=betas()[1:],
+                           filtered=filtered)
 
 
 """ FILTER.POST """
