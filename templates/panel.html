@@ -26,10 +26,10 @@
     <div class="form-group col-md-5 has-search mb-3 mb-sm-auto my-sm-1 my-md-auto">
         <span class="fa fa-search form-control-feedback"></span>
         <label class="mb-2 px-1 d-block bg-info text-white text-center" for="search" style="margin-left:1px;width: 135px;max-width:135px;min-width:112px;max-height:26px;letter-spacing:1px;">COUNTRY<i class="fa fa-flag ml-2" aria-hidden="true"></i></label>
-        <input id="search" name="search_val" value="" type="text" class="form-control col-sm-auto" placeholder="Search"/>
+        <input id="search" name="search_val" value="" type="text" class="form-control col-sm-auto col-md-auto col-lg-10" placeholder="Search"/>
     </div>         
     <div class="form-group col-md-5 offset-sm-0 my-sm-3 offset-md-2">
-        <label class="mb-2 pl-3 d-block bg-light text-black" for="beta_panel" style="margin-left:1px;width: 135px;max-width:135px;min-width:112px;max-height:26px;letter-spacing:1px;">BETA</label>
+        <label class="mb-2 pl-3 d-block bg-light text-dark" for="beta_panel" style="margin-left:1px;width: 135px;max-width:135px;min-width:112px;max-height:26px;letter-spacing:1px;">BETA</label>
         <select class="form-control" id="beta_panel" name="beta_panel">
             {% for b in betas %}
                 <option value={{ b[0] }}>{{ b[1] }}</option>
@@ -58,7 +58,8 @@
                 <td data-th="REGION" class="text-dark">{{ cr['REGION'] }}</td>
                 <td data-th="METHOD" class="text-dark">{{ cr['METHOD'] }} {{ cr['TYPE'] }}</td>
                 <td data-th="CATEGORY" class="text-dark">{{ cr['CATEGORY'] }}</td>
-                <td data-th="CRP" class="text-dark">{{ cr['CRP_PRICE'] }}</td>
+                <td title="" data-th="CRP" class="text-dark">{{ cr['CRP_PRICE'] }}
+                <span class="spnTooltip bg-light text-dark">CRP</span></td>
             </tr>
         {% endfor %}
         </tbody>

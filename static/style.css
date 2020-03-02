@@ -77,6 +77,15 @@ td, th {
     vertical-align: middle;
 }
 
+tr .spnTooltip {
+    z-index:10;display:none;width:35px;
+    margin-left:1px; padding:0px; font-size:13px;
+}
+
+tr td:hover .spnTooltip{
+    display:inline; position:absolute;
+}
+
 /* SEARCH BUTTON */
 
 .has-search .form-control {
