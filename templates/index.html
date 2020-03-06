@@ -13,7 +13,7 @@
                 {{ form.weights.label }} {{ form.weights(class_="form-control") }}
             </div>         
             <div class="form-group col-md-3">
-                {{ form.country.label }} {{ form.country(class_="form-control") }}
+                {{ form.country.label }} {{ form.country(class_="form-control text-uppercase") }}
             </div>                     
             <div class="form-group col-md-4">        
                 {{ form.beta.label }} {{ form.beta(class_="form-control") }}
@@ -74,154 +74,154 @@
 				<td>Weight RF Rate (A)</span></td>
 				<td>{{ wacc_data[0]['td1'] }}</td>
 				<td>{{ wacc_data[0]['td2'] }}</td>
-                <td>1.67%</td>
-				<td>2.00%</td>
-				<td>1.93%</td>
-				<td>1.67%</td>
+                <td>{{ wacc_data[0]['td3'] }}</td>
+				<td>{{ wacc_data[0]['td4'] }}</td>
+				<td>{{ wacc_data[0]['td5'] }}</td>
+				<td>{{ wacc_data[0]['td6'] }}</td>
 			</tr>
 			<tr class="pt-1 pt-sm-1 pt-md-0">
 				<td>Unlevered Industry Beta</td>
 				<td>{{ wacc_data[1]['td1'] }}</td>
 				<td>{{ wacc_data[1]['td2'] }}</td>
-                <td>1.00</td>
-				<td>1.00</td>
-				<td>1.00</td>
-				<td>1.00</td>
+                <td>{{ wacc_data[1]['td3'] }}</td>
+				<td>{{ wacc_data[1]['td4'] }}</td>
+				<td>{{ wacc_data[1]['td5'] }}</td>
+				<td>{{ wacc_data[1]['td6'] }}</td>
 			</tr>	
 			<tr class="pt-1 pt-sm-1 pt-md-0">
 				<td>Levered Beta (B)</td>
-				<td>1.00</td>
-				<td>1.00</td>
-                <td>1.00</td>
-				<td>1.00</td>
-				<td>1.00</td>
-				<td>1.00</td>
+				<td>{{ wacc_data[2]['td1'] }}</td>
+				<td>{{ wacc_data[2]['td2'] }}</td>
+                <td>{{ wacc_data[2]['td3'] }}</td>
+				<td>{{ wacc_data[2]['td4'] }}</td>
+				<td>{{ wacc_data[2]['td5'] }}</td>
+				<td>{{ wacc_data[2]['td6'] }}</td>
 			</tr>	
 			<tr class="pt-1 pt-sm-1 pt-md-0">
 				<td>ERP (C)</td>
-				<td>5.20%</td>
-				<td>5.25%</td>
-                <td>6.53%</td>
-				<td>5.20%</td>
-				<td>5.25%</td>
-				<td>6.53%</td>
+				<td>{{ wacc_data[3]['td1'] }}</td>
+				<td>{{ wacc_data[3]['td2'] }}</td>
+                <td>{{ wacc_data[3]['td3'] }}</td>
+				<td>{{ wacc_data[3]['td4'] }}</td>
+				<td>{{ wacc_data[3]['td5'] }}</td>
+				<td>{{ wacc_data[3]['td6'] }}</td>
 			</tr>            
 			<tr class="pt-1 pt-sm-1 pt-md-0">
 				<td>BASE COE (A + B * C)</td>
-				<td>7.20%</td>
-				<td>7.18%</td>
-                <td>8.20%</td>
-				<td>7.20%</td>
-				<td>7.18%</td>
-				<td>8.20%</td>
+				<td>{{ wacc_data[4]['td1'] }}</td>
+				<td>{{ wacc_data[4]['td2'] }}</td>
+                <td>{{ wacc_data[4]['td3'] }}</td>
+				<td>{{ wacc_data[4]['td4'] }}</td>
+				<td>{{ wacc_data[4]['td5'] }}</td>
+				<td>{{ wacc_data[4]['td6'] }}</td>
 			</tr>
  			<tr class="pt-1 pt-sm-1 pt-md-0">
 				<td>CRP (D)</td>
-				<td>0.60%</td>
-				<td>0.53%</td>
-                <td>NA</td>
-				<td>0.49%</td>
-				<td>0.88%</td>
-				<td>NA</td>
+				<td>{{ wacc_data[5]['td1'] }}</td>
+				<td>{{ wacc_data[5]['td2'] }}</td>
+                <td>{{ wacc_data[5]['td3'] }}</td>
+				<td>{{ wacc_data[5]['td4'] }}</td>
+				<td>{{ wacc_data[5]['td5'] }}</td>
+				<td>{{ wacc_data[5]['td6'] }}</td>
 			</tr>             
  			<tr class="pt-1 pt-sm-1 pt-md-0">
 				<td>Int. COE (A + B * C) + (D)</td>
-				<td>7.80%</td>
-				<td>7.71%</td>
-                <td>NA</td>
-				<td>7.69%</td>
-				<td>8.05%</td>
-				<td>NA</td>
+				<td>{{ wacc_data[6]['td1'] }}</td>
+				<td>{{ wacc_data[6]['td2'] }}</td>
+                <td>{{ wacc_data[6]['td3'] }}</td>
+				<td>{{ wacc_data[6]['td4'] }}</td>
+				<td>{{ wacc_data[6]['td5'] }}</td>
+				<td>{{ wacc_data[6]['td6'] }}</td>
 			</tr> 
  			<tr class="pt-1 pt-sm-1 pt-md-0">
 				<td>Mkt Equity Val (CUR, MM)</td>
-				<td>1.00</td>
-				<td>1.00</td>
-                <td>1.00</td>
-				<td>1.00</td>
-				<td>1.00</td>
-				<td>1.00</td>
+				<td>{{ wacc_data[7]['td1'] }}</td>
+				<td>{{ wacc_data[7]['td2'] }}</td>
+                <td>{{ wacc_data[7]['td3'] }}</td>
+				<td>{{ wacc_data[7]['td4'] }}</td>
+				<td>{{ wacc_data[7]['td5'] }}</td>
+				<td>{{ wacc_data[7]['td6'] }}</td>
 			</tr> 
  			<tr class="pt-1 pt-sm-1 pt-md-0">
 				<td>Enterprise Val (%)</td>
-				<td>100%</td>
-				<td>100%</td>
-                <td>100%</td>
-				<td>100%</td>
-				<td>100%</td>
-				<td>100%</td>
+				<td>{{ wacc_data[8]['td1'] }}</td>
+				<td>{{ wacc_data[8]['td2'] }}</td>
+                <td>{{ wacc_data[8]['td3'] }}</td>
+				<td>{{ wacc_data[8]['td4'] }}</td>
+				<td>{{ wacc_data[8]['td5'] }}</td>
+				<td>{{ wacc_data[8]['td6'] }}</td>
 			</tr> 
  			<tr class="pt-1 pt-sm-1 pt-md-0">
 				<td>Pre Tax Cost of Debt (%)</td>
-				<td>0.00%</td>
-				<td>0.00%</td>
-                <td>0.00%</td>
-				<td>0.00%</td>
-				<td>0.00%</td>
-				<td>0.00%</td>
+				<td>{{ wacc_data[9]['td1'] }}</td>
+				<td>{{ wacc_data[9]['td2'] }}</td>
+                <td>{{ wacc_data[9]['td3'] }}</td>
+				<td>{{ wacc_data[9]['td4'] }}</td>
+				<td>{{ wacc_data[9]['td5'] }}</td>
+				<td>{{ wacc_data[9]['td6'] }}</td>
 			</tr>
  			<tr class="pt-1 pt-sm-1 pt-md-0">
 				<td>After Tax Cost of Debt (%)</td>
-				<td>0.00%</td>
-				<td>0.00%</td>
-                <td>0.00%</td>
-				<td>0.00%</td>
-				<td>0.00%</td>
-				<td>0.00%</td>
+				<td>{{ wacc_data[10]['td1'] }}</td>
+				<td>{{ wacc_data[10]['td2'] }}</td>
+                <td>{{ wacc_data[10]['td3'] }}</td>
+				<td>{{ wacc_data[10]['td4'] }}</td>
+				<td>{{ wacc_data[10]['td5'] }}</td>
+				<td>{{ wacc_data[10]['td6'] }}</td>
 			</tr>    
  			<tr class="pt-1 pt-sm-1 pt-md-0">
 				<td>Mkt Val of Debt (CUR, MM)</td>
-				<td>0.0</td>
-				<td>0.0</td>
-                <td>0.0</td>
-				<td>0.0</td>
-				<td>0.0</td>
-				<td>0.0</td>
+				<td>{{ wacc_data[11]['td1'] }}</td>
+				<td>{{ wacc_data[11]['td2'] }}</td>
+                <td>{{ wacc_data[11]['td3'] }}</td>
+				<td>{{ wacc_data[11]['td4'] }}</td>
+				<td>{{ wacc_data[11]['td5'] }}</td>
+				<td>{{ wacc_data[11]['td6'] }}</td>
 			</tr>                                 
  			<tr class="pt-1 pt-sm-1 pt-md-0">
 				<td>Enterprise Val (%)</td>
-				<td>0%</td>
-				<td>0%</td>
-                <td>0%</td>
-				<td>0%</td>
-				<td>0%</td>
-				<td>0%</td>
+				<td>{{ wacc_data[12]['td1'] }}</td>
+				<td>{{ wacc_data[12]['td2'] }}</td>
+                <td>{{ wacc_data[12]['td3'] }}</td>
+				<td>{{ wacc_data[12]['td4'] }}</td>
+				<td>{{ wacc_data[12]['td5'] }}</td>
+				<td>{{ wacc_data[12]['td6'] }}</td>
 			</tr> 
  			<tr class="pt-1 pt-sm-1 pt-md-0">
 				<td>Enterprise Val (CUR, MM)</td>
-				<td>1.00</td>
-				<td>1.00</td>
-                <td>1.00</td>
-				<td>1.00</td>
-				<td>1.00</td>
-				<td>1.00</td>
+				<td>{{ wacc_data[13]['td1'] }}</td>
+				<td>{{ wacc_data[13]['td2'] }}</td>
+                <td>{{ wacc_data[13]['td3'] }}</td>
+				<td>{{ wacc_data[13]['td4'] }}</td>
+				<td>{{ wacc_data[13]['td5'] }}</td>
+				<td>{{ wacc_data[13]['td6'] }}</td>
 			</tr>             
  			<tr class="pt-1 pt-sm-1 pt-md-0">
 				<td>Enterprise Val (%)</td>
-				<td>100%</td>
-				<td>100%</td>
-                <td>100%</td>
-				<td>100%</td>
-				<td>100%</td>
-				<td>100%</td>
+				<td>{{ wacc_data[14]['td1'] }}</td>
+				<td>{{ wacc_data[14]['td2'] }}</td>
+                <td>{{ wacc_data[14]['td3'] }}</td>
+				<td>{{ wacc_data[14]['td4'] }}</td>
+				<td>{{ wacc_data[14]['td5'] }}</td>
+				<td>{{ wacc_data[14]['td6'] }}</td>
 			</tr> 
  			<tr class="pt-1 pt-sm-1 pt-md-0">
 				<td>Debt to Equity Ratio (%)</td>
-				<td>0%</td>
-				<td>0%</td>
-                <td>0%</td>
-				<td>0%</td>
-				<td>0%</td>
-				<td>0%</td>
+				<td>{{ wacc_data[15]['td1'] }}</td>
+				<td>{{ wacc_data[15]['td2'] }}</td>
+                <td>{{ wacc_data[15]['td3'] }}</td>
+				<td>{{ wacc_data[15]['td4'] }}</td>
+				<td>{{ wacc_data[15]['td5'] }}</td>
+				<td>{{ wacc_data[15]['td6'] }}</td>
 			</tr>   
  			<tr class="pt-1 pt-sm-1 pt-md-0">
 				<td>WACC</td>
-				<td>7.80%</td>
-				<td>7.71%</td>
-                <td>NA</td>
-				<td>7.69%</td>
-				<td>8.05%</td>
-				<td>NA</td>
+				<td>{{ wacc_data[16]['td1'] }}</td>
+				<td>{{ wacc_data[16]['td2'] }}</td>
+                <td>{{ wacc_data[16]['td3'] }}</td>
+				<td>{{ wacc_data[16]['td4'] }}</td>
+				<td>{{ wacc_data[16]['td5'] }}</td>
+				<td>{{ wacc_data[16]['td6'] }}</td>
 			</tr>                                   
 		</tbody>
     </table>
@@ -263,20 +263,14 @@
             })
             .done(function(data, status, xhr) {
                 if (data.wacc_data && data.wacc_data.length) {
-                    console.log(data);
 
-                    $.each(data.wacc_data, function(i, item) {
-                        console.log(i);
-                        console.log(item.td1);
-                        console.log(item.td2);
+                    $("tbody tr").each(function (i, val) {      
+                        $(this).children("td").each(function (j, val) {
+                            if (j > 0) {
+                                val.innerText = data.wacc_data[i]["td" + j];
+                            };          
+                        });
                     });
-
-                    //$("#wacc-results tr").each(function (i, val) {      
-                        //$(this).children("td").each(function (j, val) {    
-                            //console.log(val.innerText); //index 0
-                            //val.innerText = 9999;           
-                        //});
-                    //});
                     
                     if ($('header + div.alert-danger').length) {
                         $("header + div.alert-danger").remove();
@@ -296,8 +290,6 @@
             .always(function(xhrOrData, textStatus, xhrOrErr) {})
         e.preventDefault();
     });
-
-    //$("tr:nth-child(1)").find("td:eq(1)").text(9999);
 
 </script>
 {% endblock %}

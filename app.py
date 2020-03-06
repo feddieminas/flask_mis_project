@@ -38,6 +38,42 @@ def regions():
 """ custom functions yes pipeline """
 
 
+def db_erp_data():
+    pipeline = [
+        {
+            "$lookup": {
+                "from": "weights_i",
+                "localField": "WT_ID",
+                "foreignField": "ID",
+                "as": "Weights"
+            }
+        },
+        {
+            "$lookup": {
+                "from": "methods_i",
+                "localField": "METHOD_ID",
+                "foreignField": "ID",
+                "as": "Methods"
+            }
+        },
+        {"$unwind": "$Weights"},
+        {"$unwind": "$Methods"},
+        {
+            "$project": {
+                "WT": "$Weights.WT",
+                "METHOD": "$Methods.METHOD",
+                "CATEGORY": "$Methods.CATEGORY",
+                "TYPE": "$Methods.TYPE",
+                "ERP_PRICE": 1,
+                "_id": 0
+            }
+        }
+    ]
+
+    data = list(mongo.db.erp_o.aggregate(pipeline))
+    return data
+
+
 def db_weights_data():
     pipeline = [
         {
@@ -184,8 +220,19 @@ def _my_period_set(cr_type, y_val, m_val, d_val):
     return
 
 
+def _p2f_or_na(val):
+    return "NA" if val == "NA" else float(str(val).strip('%'))
+
+
 def _conv_percent_or_na(val):
-    return "NA" if math.isnan(val) else u"{0:.3f}%".format(val*100)
+    return "NA" if math.isnan(val) else u"{0:.2f}%".format(val*100)
+
+
+class wacc_settings:
+    headers = {"DM_CDS_OFFICIAL": "td1", "DM_CDS_CUSTOM": "td2",
+               "DP_YIELD_OFFICIAL": "td3", "DM_RATING_OFFICIAL": "td4",
+               "DM_RATING_CUSTOM": "td5", "DP_RATING_OFFICIAL": "td6"}
+    total_rows = 17
 
 
 def _wacc_calc_data(inputData, tax=None):
@@ -202,11 +249,125 @@ def _wacc_calc_data(inputData, tax=None):
         wts = inputData[:]
         inputData = [('weights', '100US'), ('country', 'Greece'),
                      ('beta', 'No Industry | 1'), ('beta_manual', None),
-                     ('yield_on_debt', 0.0), ('tax', tax),
-                     ('mvalue_debt', 0.0), ('mvalue_equity', 0.0)]
-    print(wts)
-    print(inputData)
-    return 1  # want to make it list of dicts
+                     ('yield_on_debt', 1.0), ('tax', tax),
+                     ('mvalue_debt', 1.0), ('mvalue_equity', 1.0)]
+    filt_wts = list(filter(lambda c: c['WT'].upper() == inputData[0][1], wts))
+    wacc_data = []
+    for i in range(wacc_settings.total_rows):
+        wacc_data.append({"td1": None, "td2": None, "td3": None,
+                          "td4": None, "td5": None, "td6": None})
+    """ Weight RF Rate (A) """
+    for w in filt_wts:
+        wacc_data[0][wacc_settings.headers[str(w["METHOD"].upper()
+                     + "_" + w["CATEGORY"].upper()
+                     + "_" + w["TYPE"].upper())]] = _conv_percent_or_na(
+                         w["WT_PRICE"])
+    """ Unlevered Industry Beta """
+    beta = float(inputData[3][1]) if inputData[2][1] == "Manual" else float(
+        inputData[2][1].split("|")[1].strip())
+    wacc_data[1] = {key: beta for key in wacc_data[1]}
+    """ Levered Beta (B), calc at the end """
+    wacc_data[2] = {key: 1 for key in wacc_data[2]}
+    """ ERP (C) """
+    filt_erps = list(filter(lambda e: e['WT'].upper() == inputData[0][1]
+                            or e['METHOD'].upper() == 'DM', db_erp_data()))
+    for e in filt_erps:
+        wacc_data[3][wacc_settings.headers[str(e["METHOD"].upper()
+                     + "_" + e["CATEGORY"].upper()
+                     + "_" + e["TYPE"].upper())]] = _conv_percent_or_na(
+                         e["ERP_PRICE"])
+    wacc_data[3]["td4"], wacc_data[3]["td5"] = wacc_data[3]["td1"], wacc_data[3]["td2"]
+    """ BASE COE (A + B * C), calc at the end """
+    wacc_data[4] = {key: 1 for key in wacc_data[4]}
+    """ CRP (D) """
+    filt_crps = list(filter(lambda e:
+                     e['COUNTRY'].upper() == inputData[1][1].upper(),
+                            db_data()))
+    for e in filt_crps:
+        wacc_data[5][wacc_settings.headers[str(e["METHOD"].upper()
+                     + "_" + e["CATEGORY"].upper()
+                     + "_" + e["TYPE"].upper())]] = _conv_percent_or_na(
+                         e["CRP_PRICE"])
+    """ Int. COE (A + B * C) + (D), calc at the end """
+    """ Mkt Equity Val (CUR, MM) """
+    wacc_data[7] = {key: inputData[7][1] for key in wacc_data[7]}
+    """ Enterprise Val (%), calc at the end """
+    wacc_data[8] = {key: 1 for key in wacc_data[8]}
+    """ Pre Tax Cost of Debt (%) """
+    wacc_data[9] = {key: _conv_percent_or_na(float(inputData[4][1])/100)
+                    for key in wacc_data[9]}
+    """ After Tax Cost of Debt (%) """
+    wacc_data[10] = {key: _conv_percent_or_na(((inputData[4][1])
+                     * (1-(float(inputData[5][1])/100)))/100)
+                     for key in wacc_data[10]}
+    """ Mkt Val of Debt (CUR, MM) """
+    wacc_data[11] = {key: inputData[6][1] for key in wacc_data[11]}
+    """ Enterprise Val (%), calc at the end """
+    wacc_data[12] = {key: 1 for key in wacc_data[12]}
+    """ Enterprise Val (CUR, MM) """
+    wacc_data[13] = {key: float(wacc_data[7][key] + wacc_data[11][key])
+                     for key in wacc_data[13]}
+    """ Enterprise Val (%) """
+    wacc_data[14] = {key: 1 for key in wacc_data[14]}
+    for i in range(len(wacc_data[14])):
+        a = _p2f_or_na(wacc_data[13]["td" + str(i+1)])
+        if isinstance(a, str):
+            wacc_data[14]["td" + str(i+1)] = "NA"
+        else:
+            wacc_data[14]["td" + str(i+1)] = _conv_percent_or_na(
+                    a/wacc_data[14]["td" + str(i+1)]
+                    if a == 0 else a/a)  # zero-division-error issue
+    """ Debt to Equity Ratio (%) """
+    wacc_data[15] = {key: 1 for key in wacc_data[15]}
+    wacc_data[15] = {key: _conv_percent_or_na(
+        float(wacc_data[11][key] / wacc_data[15][key] if
+              wacc_data[7][key] == 0 else
+              wacc_data[11][key] / wacc_data[7][key]))
+              for key in wacc_data[15]}  # zero-division-error issue
+    """ Remained Calcs from above """
+    for i in range(len(wacc_data[2])):  # Levered Beta (B)
+        a = _p2f_or_na(wacc_data[15]["td" + str(i+1)])/100
+        wacc_data[2]["td" + str(i+1)] = round(wacc_data[1]["td" + str(i+1)] * (
+            1+(1-float(inputData[5][1])/100) * a), 2)
+    for i in range(len(wacc_data[4])):  # BASE COE (A + B * C)
+        a, b = _p2f_or_na(wacc_data[0]["td" + str(i+1)])/100, _p2f_or_na(
+            wacc_data[3]["td" + str(i+1)])/100
+        wacc_data[4]["td" + str(i+1)] = _conv_percent_or_na(a + (
+            wacc_data[2]["td" + str(i+1)] * b))
+    for i in range(len(wacc_data[6])):  # Int. COE (A + B * C) + (D)
+        a, b = _p2f_or_na(wacc_data[4]["td" + str(i+1)]), _p2f_or_na(
+            wacc_data[5]["td" + str(i+1)])
+        if any([isinstance(a, str), isinstance(b, str)]):
+            wacc_data[6]["td" + str(i+1)] = "NA"
+        else:
+            wacc_data[6]["td" + str(i+1)] = _conv_percent_or_na((a + b)/100)
+    for i in range(len(wacc_data[8])):  # Enterprise Val (%)
+        a, b = wacc_data[7]["td" + str(i+1)], wacc_data[13]["td" + str(i+1)]
+        if any([isinstance(a, str), isinstance(b, str)]):
+            wacc_data[8]["td" + str(i+1)] = "NA"
+        else:
+            wacc_data[8]["td" + str(i+1)] = _conv_percent_or_na(
+                a/wacc_data[8]["td" + str(i+1)] if b == 0 else a / b)
+    for i in range(len(wacc_data[12])):  # Enterprise Val (%)
+        a, b = wacc_data[11]["td" + str(i+1)], wacc_data[13]["td" + str(i+1)]
+        if any([isinstance(a, str), isinstance(b, str)]):
+            wacc_data[12]["td" + str(i+1)] = "NA"
+        else:
+            wacc_data[12]["td" + str(i+1)] = _conv_percent_or_na(
+              a/wacc_data[12]["td" + str(i+1)] if b == 0 else a / b)
+    """ WACC """
+    for i in range(len(wacc_data[16])):
+        a, b, c, d = _p2f_or_na(wacc_data[6]["td" + str(i+1)])/100, _p2f_or_na(
+            wacc_data[8]["td" + str(i+1)])/100, _p2f_or_na(
+                wacc_data[10]["td" + str(i+1)])/100, _p2f_or_na(
+                    wacc_data[12]["td" + str(i+1)])/100
+        if any([isinstance(a, str), isinstance(b, str),
+                isinstance(c, str), isinstance(d, str)]):
+            wacc_data[16]["td" + str(i+1)] = "NA"
+        else:
+            wacc_data[16]["td" + str(i+1)] = _conv_percent_or_na(
+                (a * b) + (c * d))
+    return wacc_data  # want to make it list of dicts
 
 
 """ INDEX.HTML """
@@ -232,9 +393,7 @@ def index():
     wacc function retrieve data for Greece of No Industry | 1
     and weight 100US
     """
-    # print(_wacc_calc_data(wts, taxJSf))
-    wacc_data = [{'td1': '2.00%', 'td2': '1.93%'},
-                 {'td1': 1.00, 'td2': 1.01}]
+    wacc_data = _wacc_calc_data(wts, default_tax)
     return render_template('index.html', form=form, taxJSonCl=taxJSf,
                            dts=dts, default_tax=default_tax,
                            wacc_data=wacc_data)
@@ -246,7 +405,6 @@ def index():
 @app.route('/_wacc_nums', methods=['POST'])
 def wacc_nums():
     form = WACCForm(item=request.get_json())
-    print(form.weights.data, form.validate_on_submit())
     mylistOfTup = []
     if form.validate_on_submit():
         for key, value in form.data.items():
@@ -255,16 +413,17 @@ def wacc_nums():
             elif (key == 'csrf_token'):
                 continue
             else:
-                mylistOfTup.append((key, None if value in ['', None]
+                if key == "beta_manual":
+                    value = 0 if str(form.beta.data) == "Manual" and value in ['', None] else value
+                else:
+                    value = 0 if value in ['', None] else value
+                mylistOfTup.append((key, None if value is None
                                     else float(value)))
         """
         wacc function retrieve data for selected country
         of tuples
         """
-        print(mylistOfTup)
-        # print(_wacc_calc_data(mylistOfTup))
-        wacc_data = [{'td1': '2.00%', 'td2': '1.93%'},
-                     {'td1': 1.00, 'td2': 1.01}]
+        wacc_data = _wacc_calc_data(mylistOfTup)
         return jsonify(wacc_data=wacc_data)
     else:
         return jsonify(wacc_data=None)
