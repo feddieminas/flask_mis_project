@@ -40,7 +40,7 @@ button.multiselect, button.multiselect:hover {
     border: 1px solid navy;
 }
 
-.form-inline .multiselect-container li a label.checkbox input[type=checkbox], .form-inline .multiselect-container li a label.radio input[type=radio] {
+.multiselect-container li a label.checkbox input[type=checkbox], .multiselect-container li a label.radio input[type=radio] {
     margin-left: -20px;
     margin-right: 0px;
 }
@@ -118,7 +118,7 @@ tr td:hover .spnTooltip{
 
 @media only screen and (min-width : 320px) and (max-width: 767px ) { 
 
-    .form-inline .multiselect-container li a label.checkbox input[type=checkbox], .form-inline .multiselect-container li a label.radio input[type=radio] {
+    .multiselect-container li a label.checkbox input[type=checkbox], .multiselect-container li a label.radio input[type=radio] {
         margin-right: 2px !important;
     }
 
@@ -175,7 +175,7 @@ tr td:hover .spnTooltip{
 }   
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
-    .form-inline .multiselect-container li a label.checkbox input[type=checkbox], .form-inline .multiselect-container li a label.radio input[type=radio] {
+    .multiselect-container li a label.checkbox input[type=checkbox], .multiselect-container li a label.radio input[type=radio] {
         margin-right: 2px !important;
     }   
 } 
@@ -185,7 +185,7 @@ tr td:hover .spnTooltip{
         min-width: 50px;
     }
     
-    .form-inline .multiselect-container li a label.checkbox input[type=checkbox], .form-inline .multiselect-container li a label.radio input[type=radio] {
+    .multiselect-container li a label.checkbox input[type=checkbox], .multiselect-container li a label.radio input[type=radio] {
         margin-right: 2px !important;
     }
 }

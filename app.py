@@ -6,7 +6,7 @@ if os.path.exists('env.py'):
 from flask import Flask, render_template, redirect, request, url_for, session, flash, jsonify
 from werkzeug.urls import url_parse
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
-from forms import LoginForm, WACCForm, betas
+from forms import LoginForm, WACCForm, betas, weights
 from bson.son import SON
 from bson.json_util import dumps
 from user import User
@@ -217,7 +217,6 @@ def _my_period_set(cr_type, y_val, m_val, d_val):
         return "{} {}".format(mdict[int(m_val)], str(y_val)[2:])
     else:
         return "{} {} {}".format(d_val, mdict[int(m_val)], str(y_val)[2:])
-    return
 
 
 def _p2f_or_na(val):
@@ -251,7 +250,7 @@ def _wacc_calc_data(inputData, tax=None):
                      ('beta', 'No Industry | 1'), ('beta_manual', None),
                      ('yield_on_debt', 1.0), ('tax', tax),
                      ('mvalue_debt', 1.0), ('mvalue_equity', 1.0)]
-    filt_wts = list(filter(lambda c: c['WT'].upper() == inputData[0][1], wts))
+    filt_wts = list(filter(lambda w: w['WT'].upper() == inputData[0][1], wts))
     wacc_data = []
     for i in range(wacc_settings.total_rows):
         wacc_data.append({"td1": None, "td2": None, "td3": None,
@@ -305,7 +304,8 @@ def _wacc_calc_data(inputData, tax=None):
     """ Enterprise Val (%), calc at the end """
     wacc_data[12] = {key: 1 for key in wacc_data[12]}
     """ Enterprise Val (CUR, MM) """
-    wacc_data[13] = {key: float(wacc_data[7][key] + wacc_data[11][key])
+    wacc_data[13] = {key: round(float(wacc_data[7][key] +
+                                      wacc_data[11][key]), 2)
                      for key in wacc_data[13]}
     """ Enterprise Val (%) """
     wacc_data[14] = {key: 1 for key in wacc_data[14]}
@@ -434,17 +434,60 @@ def wacc_nums():
 
 @app.route('/panel', methods=['GET'])
 def panel():
-    if 'f' not in session:
+    if all(k not in session for k in ("f", "w", "b")):
         session['f'] = None
+        session['w'] = 1
+        session['b'] = 1
 
     filtered = True if session['f'] is not None else False
 
     crpJSf = db_data(session['f'])
 
+    coe_dict = []
+    for i in range(2):
+        coe_dict.append({"DM_CDS_OFFICIAL": None, "DM_CDS_CUSTOM": None,
+                         "DP_YIELD_OFFICIAL": None, "DM_RATING_OFFICIAL": None,
+                         "DM_RATING_CUSTOM": None, "DP_RATING_OFFICIAL": None})
+
+    """ weights """
+    wts_i = weights()
+    wts_panel = wts_i[int(session['w'])-1][1]
+    wts = db_weights_data()
+    filt_wts = list(filter(lambda w: w['WT'].upper() == wts_panel,
+                    wts))
+    for w in filt_wts:
+        coe_dict[0][str(w["METHOD"].upper() + "_" + w["CATEGORY"].upper()
+                    + "_" + w["TYPE"].upper())] = w["WT_PRICE"]
+
+    """ erps """
+    filt_erps = list(filter(lambda e: e['WT'].upper() == wts_panel
+                            or e['METHOD'].upper() == 'DM', db_erp_data()))
+    for e in filt_erps:
+        coe_dict[1][str(e["METHOD"].upper() + "_" + e["CATEGORY"].upper()
+                        + "_" + e["TYPE"].upper())] = e["ERP_PRICE"]
+    coe_dict[1]["DM_RATING_OFFICIAL"], coe_dict[1]["DM_RATING_CUSTOM"] = coe_dict[1]["DM_CDS_OFFICIAL"], coe_dict[1]["DM_CDS_CUSTOM"]
+
+    """ betas """
+    bts_i = betas()[1:]
+    bts_value = float(bts_i[int(session['b'])-1][1].split("|")[1].strip())
+    coe_dict.append({"BETA": bts_value})
+
     for cr in crpJSf:
         cr['PERIOD'] = _my_period_set(cr['TYPE'], cr['DYEAR'],
                                       cr['DMONTH'], cr['DDAY'])
         cr['CRP_PRICE'] = _conv_percent_or_na(cr['CRP_PRICE'])
+        if cr['CRP_PRICE'] != "NA":
+            cr['COE_PRICE'] = _conv_percent_or_na(
+                                        coe_dict[0][str(cr["METHOD"].upper() +
+                                                    "_" +
+                                                        cr["CATEGORY"].upper()
+                                                        + "_" +
+                                                        cr["TYPE"].upper())] + (coe_dict[2]["BETA"]
+                                                        * coe_dict[1][str(cr["METHOD"].upper() + "_" +
+                                                        cr["CATEGORY"].upper() + "_" + cr["TYPE"].upper())]
+                                                        ) + _p2f_or_na(cr['CRP_PRICE'])/100)
+        else:
+            cr['COE_PRICE'] = "NA"
 
     page_limit = 25
     current_page = int(request.args.get('current_page', 1))
@@ -457,8 +500,10 @@ def panel():
     return render_template('panel.html', crpJS=crpJS,
                            crpJSonCl=crpJSf,
                            current_page=current_page, pages=pages,
-                           regions=regions(), betas=betas()[1:],
-                           filtered=filtered)
+                           regions=regions(), weights=wts_i,
+                           wval=session['w'], betas=bts_i,
+                           bval=session['b'], filtered=filtered,
+                           wtsJSon=wts, erpJSon=coe_dict[1:2])
 
 
 """ FILTER.POST """
@@ -471,6 +516,13 @@ def filtering():
     if len(theOptions):
         session['f'] = dumps(theOptions)
     return redirect(url_for('panel'))
+
+
+@app.route('/panel/_add_numbers')
+def add_numbers():
+    session['w'] = request.args.get('w', 1, type=int)
+    session['b'] = request.args.get('b', 1, type=int)
+    return jsonify(result=True)
 
 
 """ ADMIN.HTML """

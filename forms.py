@@ -45,7 +45,8 @@ def betas():
              }
          }
     ]))
-    return [(b['ID'], b['INDUSTRY_ULBETA']) for b in mybts]
+    return sorted([(b['ID'], b['INDUSTRY_ULBETA']) for b in mybts],
+                  key=lambda x: x[0])
 
 
 class PassSelectField(SelectField):
