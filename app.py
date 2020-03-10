@@ -1,17 +1,16 @@
 import os
 import pandas as pd
 import math
-if os.path.exists('env.py'):
-    import env
-from flask import Flask, render_template, redirect, request, url_for, session, flash, jsonify
+from flask import render_template, redirect, request, url_for, session, flash, jsonify
 from werkzeug.urls import url_parse
 from flask_login import current_user, login_user, logout_user, login_required
 from forms import LoginForm, WACCForm, betas, weights
 from bson.json_util import dumps
 from user import User
-from init_app import app, csrf, mongo, login
+from init_app import app, mongo, csrf, login
 from db_utils import regions, db_erp_data, db_weights_data, db_tax_data, db_data
-
+if os.path.exists('env.py'):
+    import env
 
 """ FORMS """
 
@@ -485,15 +484,6 @@ class Switcher(object):
         try:
             mongo.db.erp_o.delete_many({"WT_ID": {"$gte": 0}})
             mongo.db.erp_o.insert_many(self.dfd)
-            return True
-        except Exception:
-            return False
-
-    """ riskfree_o.csv """
-    def method_riskfree_o(self):
-        try:
-            mongo.db.riskfree_o.delete_many({"COUNTRY_ID": {"$gte": 0}})
-            mongo.db.riskfree_o.insert_many(self.dfd)
             return True
         except Exception:
             return False

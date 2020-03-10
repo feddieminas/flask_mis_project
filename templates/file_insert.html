@@ -3,14 +3,14 @@
 {% block content %} 
 
     <div class="row float-left mt-1 mx-1 mx-sm-auto mt-sm-3" style="clear:left;position:fixed;left:calc(30% - 80px);">
-        <form id="fi-form" class="ml-2 my-2 form-inline w-74" action = "{{ url_for('db_upload') }}" method = "POST"
+        <form id="fi-form" class="ml-2 my-3 my-sm-2 form-inline w-74" action = "{{ url_for('db_upload') }}" method = "POST"
             enctype = "multipart/form-data">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/> 
             <div class="form-group">
-                <label for="db_file">File Input</label>
+                <label class="mb-2" for="db_file" style="letter-spacing: 1px;">File Input<span class="fa fa-upload fa-2x mx-1"></span></label>
                 <input type="file" class="form-control-file" name = "db_file" id="db_file" multiple style="max-width: 95%;">
             </div>
-            <input type="submit" class="btn btn-secondary"></input>
+            <input type="submit" class="btn btn-secondary btn-lg rounded mt-2 mb-2 py-2"></input>
         </form>
     </div> 
 

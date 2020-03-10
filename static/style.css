@@ -45,36 +45,22 @@ button.multiselect, button.multiselect:hover {
     margin-right: 2px !important;
 }
 
-/* PANEL */
-
-tbody tr:hover {
-    background-color: #bee5eb;
-}
-
-table { 
-    width: 100%; 
-    border-collapse: collapse; 
-}
+/* TABLES */
 
 /* Zebra striping */
 tr:nth-of-type(odd) { 
-    background: #eee; 
+    background: rgba(202, 166, 220, 0.40); 
 }
 
 th { 
     background: #b8daff;
     color: black;
-    font-weight: bold; 
-    cursor: s-resize;
-    background-repeat: no-repeat;
-    background-position: 3% center;
+    font-weight: 700; 
 }
 
 td, th { 
-    padding: 6px; 
     border: 1px solid #ccc; 
-    text-align: center; 
-    vertical-align: middle;
+    text-align: center; /* along with vertical-align middle, would center your text, if not used btsp classes */
     min-width: 50px;
     /* autofit to content */
     white-space: nowrap;
@@ -141,6 +127,8 @@ tr td:hover .spnTooltip{
         border-bottom: 1px solid #eee; 
         position: relative;
         padding-left: 48%;
+        padding-top: 6px;
+        padding-bottom: 10px;
     }   
 
     /* PANEL TABLE */    
