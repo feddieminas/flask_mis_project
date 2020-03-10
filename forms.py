@@ -72,16 +72,16 @@ class WACCForm(FlaskForm):
                                   widget=html5.NumberInput(step=0.01))
     yield_on_debt = FlexiFloatField('Yield On Debt %',
                                     validators=[InputRequired()],
-                                    default=0.0,
+                                    default=1.0,
                                     render_kw={"placeholder": "%"},
                                     widget=html5.NumberInput(step=0.01))
     tax = FlexiFloatField('Tax %', validators=[InputRequired()],
                           default=0.0, render_kw={"placeholder": "%"},
                           widget=html5.NumberInput(min=0, max=100, step=0.1))
     mvalue_debt = FlexiFloatField('Mkt Value Debt',
-                                  validators=[InputRequired()], default=0.0,
+                                  validators=[InputRequired()], default=1.0,
                                   widget=html5.NumberInput(step=0.001))
     mvalue_equity = FlexiFloatField('Mkt Value Equity',
                                     validators=[InputRequired()],
-                                    default=0.0,
+                                    default=1.0,
                                     widget=html5.NumberInput(step=0.001))

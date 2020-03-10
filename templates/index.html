@@ -42,7 +42,7 @@
     </form>
 </div>
 
-<div class="my-2 mb-3 my-sm-3 my-lg-4" style="overflow:scroll; min-width:295px;">
+<div class="my-2 mb-3 my-sm-3 my-lg-3" style="overflow:scroll; min-width:295px;">
     <table id="wacc-results">
         <thead>
 			<tr>
@@ -232,7 +232,7 @@
 
 {% block morescripts %}
 <script type="text/javascript">
-    const taxJSonCl = {{ taxJSonCl|tojson }};
+    const taxJSonCl = {{ taxJSonCl|tojson|safe }};
 
     const csrf_token = $('#csrf_token').val();
     $.ajaxSetup({
@@ -280,13 +280,17 @@
                 } else {
 
                     if ($('header + div.alert-danger').length == 0) {
-                        $("header").after("<div class='alert-danger pl-4 py-2 text-left'>Wrong Input Data. Please Try Again </div>");
+                        $("header").after("<div class='alert-danger pl-4 py-2 text-left text-md-center'>Wrong Input Data. Please Try Again </div>");
                     }
 
                     return false
                 }
             })
-            .fail(function(xhr, status, err) {})
+            .fail(function(xhr, status, err) { 
+                if ($('header + div.alert-danger').length == 0) {
+                    $("header").after("<div class='alert-warning pl-4 py-2 text-left text-md-center'>Page Issue. Please Reload the page </div>");
+                }
+            })
             .always(function(xhrOrData, textStatus, xhrOrErr) {})
         e.preventDefault();
     });

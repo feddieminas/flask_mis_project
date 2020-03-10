@@ -42,7 +42,7 @@ button.multiselect, button.multiselect:hover {
 
 .multiselect-container li a label.checkbox input[type=checkbox], .multiselect-container li a label.radio input[type=radio] {
     margin-left: -20px;
-    margin-right: 0px;
+    margin-right: 2px !important;
 }
 
 /* PANEL */
@@ -75,6 +75,10 @@ td, th {
     border: 1px solid #ccc; 
     text-align: center; 
     vertical-align: middle;
+    min-width: 50px;
+    /* autofit to content */
+    white-space: nowrap;
+    width: 1%;
 }
 
 tr .spnTooltip {
@@ -117,10 +121,6 @@ tr td:hover .spnTooltip{
 /* MEDIA QUERIES */  
 
 @media only screen and (min-width : 320px) and (max-width: 767px ) { 
-
-    .multiselect-container li a label.checkbox input[type=checkbox], .multiselect-container li a label.radio input[type=radio] {
-        margin-right: 2px !important;
-    }
 
     .paginate, .paginate thead, .paginate tbody, .paginate th, .paginate td, .paginate tr { 
         display: block;
@@ -170,22 +170,11 @@ tr td:hover .spnTooltip{
 
     #wacc-results thead tr:first-child { 
         display: none;
-    }    
+    }
 
-}   
+    #wacc-results td, #wacc-results th { 
+        /* autofit to content */
+        white-space: pre-wrap;
+    }
 
-@media only screen and (min-width: 768px) and (max-width: 991px) {
-    .multiselect-container li a label.checkbox input[type=checkbox], .multiselect-container li a label.radio input[type=radio] {
-        margin-right: 2px !important;
-    }   
 } 
-
-@media only screen and (min-width: 992px) {
-    td, th {
-        min-width: 50px;
-    }
-    
-    .multiselect-container li a label.checkbox input[type=checkbox], .multiselect-container li a label.radio input[type=radio] {
-        margin-right: 2px !important;
-    }
-}

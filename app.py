@@ -5,208 +5,29 @@ if os.path.exists('env.py'):
     import env
 from flask import Flask, render_template, redirect, request, url_for, session, flash, jsonify
 from werkzeug.urls import url_parse
-from flask_login import LoginManager, current_user, login_user, logout_user, login_required
+from flask_login import current_user, login_user, logout_user, login_required
 from forms import LoginForm, WACCForm, betas, weights
-from bson.son import SON
 from bson.json_util import dumps
 from user import User
-from init_app import app, csrf, mongo
+from init_app import app, csrf, mongo, login
+from db_utils import regions, db_erp_data, db_weights_data, db_tax_data, db_data
 
 
-""" forms """
+""" FORMS """
 
-login = LoginManager(app)
+
 login.login_view = 'login'
 
 
-""" custom template filters
-@app.template_filter('conv_percents')
-def percents(val):
-    return "{0:.3f}%".format(val*100)
-cr['ERP']|conv_percents
-"""
+""" ERROR HANDLING PAGE IF NOT FOUND """
 
 
-""" custom functions no pipeline """
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 
-def regions():
-    return sorted(mongo.db.countries_i.distinct("REGION",
-                  {"COUNTRY": {"$nin": ["", "null", "Null", None]}}))
-
-
-""" custom functions yes pipeline """
-
-
-def db_erp_data():
-    pipeline = [
-        {
-            "$lookup": {
-                "from": "weights_i",
-                "localField": "WT_ID",
-                "foreignField": "ID",
-                "as": "Weights"
-            }
-        },
-        {
-            "$lookup": {
-                "from": "methods_i",
-                "localField": "METHOD_ID",
-                "foreignField": "ID",
-                "as": "Methods"
-            }
-        },
-        {"$unwind": "$Weights"},
-        {"$unwind": "$Methods"},
-        {
-            "$project": {
-                "WT": "$Weights.WT",
-                "METHOD": "$Methods.METHOD",
-                "CATEGORY": "$Methods.CATEGORY",
-                "TYPE": "$Methods.TYPE",
-                "ERP_PRICE": 1,
-                "_id": 0
-            }
-        }
-    ]
-
-    data = list(mongo.db.erp_o.aggregate(pipeline))
-    return data
-
-
-def db_weights_data():
-    pipeline = [
-        {
-            "$lookup": {
-                "from": "weights_i",
-                "localField": "WT_ID",
-                "foreignField": "ID",
-                "as": "Weights"
-            }
-        },
-        {
-            "$lookup": {
-                "from": "yearqm_i",
-                "localField": "YEARQM_ID",
-                "foreignField": "ID",
-                "as": "YearQM"
-            }
-        },
-        {
-            "$lookup": {
-                "from": "methods_i",
-                "localField": "METHOD_ID",
-                "foreignField": "ID",
-                "as": "Methods"
-            }
-        },
-        {"$unwind": "$Weights"},
-        {"$unwind": "$YearQM"},
-        {"$unwind": "$Methods"},
-        {
-            "$project": {
-                "DYEAR": "$YearQM.DYEAR",
-                "DMONTH": "$YearQM.DMONTH",
-                "DDAY": 1,
-                "WT": "$Weights.WT",
-                "METHOD": "$Methods.METHOD",
-                "CATEGORY": "$Methods.CATEGORY",
-                "TYPE": "$Methods.TYPE",
-                "WT_PRICE": 1,
-                "_id": 0
-            }
-        }
-    ]
-
-    data = list(mongo.db.weights_o.aggregate(pipeline))
-    return data
-
-
-def db_tax_data():
-    pipeline = [
-        {
-            "$lookup": {
-                "from": "countries_i",
-                "localField": "COUNTRY_ID",
-                "foreignField": "ID",
-                "as": "Country"
-            }
-        },
-        {"$unwind": "$Country"},
-        {
-            "$project": {
-                "COUNTRY": "$Country.COUNTRY",
-                "TAX": 1,
-                "_id": 0
-            }
-        },
-        {"$sort": SON([("COUNTRY", 1)])}
-    ]
-
-    data = list(mongo.db.taxes_o.aggregate(pipeline))
-    return data
-
-
-def db_data(filtering=None):
-    pipeline = [
-        {
-            "$lookup": {
-                "from": "countries_i",
-                "localField": "COUNTRY_ID",
-                "foreignField": "ID",
-                "as": "Country"
-            }
-        },
-        {
-            "$lookup": {
-                "from": "yearqm_i",
-                "localField": "YEARQM_ID",
-                "foreignField": "ID",
-                "as": "YearQM"
-            }
-        },
-        {
-            "$lookup": {
-                "from": "methods_i",
-                "localField": "METHOD_ID",
-                "foreignField": "ID",
-                "as": "Methods"
-            }
-        },
-        {"$unwind": "$Country"},
-        {"$unwind": "$YearQM"},
-        {"$unwind": "$Methods"},
-        {
-            "$project": {
-                "DYEAR": "$YearQM.DYEAR",
-                "DMONTH": "$YearQM.DMONTH",
-                "DDAY": 1,
-                "COUNTRY": "$Country.COUNTRY",
-                "REGION": "$Country.REGION",
-                "METHOD": "$Methods.METHOD",
-                "CATEGORY": "$Methods.CATEGORY",
-                "TYPE": "$Methods.TYPE",
-                "CRP_PRICE": 1,
-                "_id": 0
-            }
-        },
-        {"$sort": SON([("COUNTRY", 1), ("METHOD", 1), ("CATEGORY", 1)])}
-    ]
-
-    data = list(mongo.db.crp_o.aggregate(pipeline))
-    if bool(filtering):
-        theRegions = regions()
-        filtering = {theRegions[int(f)-1] for f in filtering if f.isdigit()}
-        data = [x for x in _filterbyvalue(data, filtering)]
-    return data
-
-
-def _filterbyvalue(seq, values):
-    for el in seq:
-        for v in values:
-            if any([bool(el["COUNTRY"] == v), bool(el["REGION"] == v),
-                    bool(el["METHOD"] == v)]):
-                yield el
+""" CUSTOM FUNCTIONS """
 
 
 def _my_period_set(cr_type, y_val, m_val, d_val):
@@ -568,7 +389,7 @@ Upload a csv file (or multiple) with a specific name (as method arg)
 and an extension of _ and eight value secret key, which
 you define on env vars. We reset the collection and insert
 the new ones. Two approaches were shown below, insert_one and
-insert_many. Equally all approaches can go to different methods. 
+insert_many. Equally all approaches can go to different methods.
 
 """
 

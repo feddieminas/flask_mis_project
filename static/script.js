@@ -4,7 +4,7 @@ $(document).ready(function() {
     $(window).on('resize', function(){
         const h = window.innerHeight;
         if (h >= 1100) {
-            $("body").css({'font-size' : '1.23rem'});
+            $("body").css({'font-size' : '1.21rem'});
         }
         else {
             $("body").css({'font-size' : 'inherit'});
@@ -57,13 +57,13 @@ $(document).ready(function() {
         buttonClass: 'btn btn-outline-dark mt-3',
         buttonContainer : '<div class="dropdown" />',
         templates: {
-                li: '<li class="dropdown-item"><a><label class="m-0 ml-1 pl-3 pr-0"></label></a></li>',
+                li: '<li class="dropdown-item"><a class="ml-1"><label class="m-0 ml-1 pl-3 pr-0"></label></a></li>',
                 ul: '<ul class="multiselect-container dropdown-menu p-1 m-0"></ul>'
         },
         nonSelectedText:'ALL REGIONS',
         buttonWidth: '222px',
         onChange: function(option, checked, select) {
-            console.log($(option), $(option).val(), checked, select); // print bootstrap multiselect options
+            console.log($(option), $(option).val(), checked, select); // printed bootstrap multiselect options
         }       
     });
 
@@ -141,7 +141,7 @@ $(document).ready(function() {
         $('a.page-link')[1].click();
     });  
 
-    // PANEL.HTML - COE Calculation - Beta and Weights playground
+    // PANEL.HTML - COE Calculation - Beta and Weights playground - Repeated as in the Server Side, DRY rule not applied
     function _p2f_or_na(val) {
         if (val == "NA") {
             return "NA";
@@ -201,7 +201,10 @@ $(document).ready(function() {
                     $(this).children('td')[4].innerText.toUpperCase()
                 ];
                 $(this).children("td:last-child").each(function (j, val) {
-                    val.innerText = crpJSonCl[parseInt(crpJSonCl_index)].COE_PRICE;
+                    let $td = $(this);
+                    let $span = $td.find('span');
+                    $td.html(crpJSonCl[parseInt(crpJSonCl_index)].COE_PRICE);
+                    $td.append($span);
                 });
             });
             coe_td_index = {};
