@@ -94,16 +94,16 @@
     </table>
 </div>
 
- <ul class="pagination justify-content-center mt-2 mt-sm-3">  
+ <ul class="pagination d-flex flex-wrap justify-content-center align-items-center mt-2 mt-sm-3">  
 
-    <li class="page-item">
+    <li class="page-item mb-2 mb-sm-auto">
         {% if current_page == 1 %} 
-            <a id="previous" class="page-link" href="#!" aria-label="Previous">
+            <a id="previous" class="page-link px-3 px-sm-auto px-md-3 px-lg-4" href="#!" aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>
                 <span class="sr-only">Previous</span>
             </a>
         {% else %}
-            <a id="previous" class="page-link" href="{{ url_for('panel', current_page=current_page-1) }}" aria-label="Previous">
+            <a id="previous" class="page-link px-3 px-sm-auto px-md-3 px-lg-4" href="{{ url_for('panel', current_page=current_page-1) }}" aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>
                 <span class="sr-only">Previous</span>
             </a>
@@ -112,20 +112,20 @@
     
     {% for page_number in pages %}
         {% if page_number == current_page %}
-            <li class="page-item active"><a class="page-link" href="#!">{{ page_number }}</a></li>
+            <li class="page-item mb-2 mb-sm-auto active"><a class="page-link px-2 px-sm-auto px-md-3 px-lg-4" href="#!">{{ page_number }}</a></li>
         {% else %}
-            <li class="page-item"><a class="page-link" href="{{ url_for('panel', current_page=page_number) }}">{{ page_number }}</a></li>
+            <li class="page-item mb-2 mb-sm-auto"><a class="page-link px-2 px-sm-auto px-md-3 px-lg-4" href="{{ url_for('panel', current_page=page_number) }}">{{ page_number }}</a></li>
         {% endif %} 
     {% endfor %}
 
-    <li class="page-item">
+    <li class="page-item mb-2 mb-sm-auto">
         {% if current_page < pages|length %}  
-            <a id="next" class="page-link" href="{{ url_for('panel', current_page=current_page+1) }}" aria-label="Next">
+            <a id="next" class="page-link px-3 px-sm-auto px-md-3 px-lg-4" href="{{ url_for('panel', current_page=current_page+1) }}" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
                 <span class="sr-only">Next</span>
             </a>
         {% else %}
-            <a id="next" class="page-link" href="#!" aria-label="Next">
+            <a id="next" class="page-link px-3 px-sm-auto px-md-3 px-lg-4" href="#!" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
                 <span class="sr-only">Next</span>
             </a>        
@@ -144,7 +144,7 @@
     fixTblHeight({{ crpJS|tojson|safe }}); // we have six table columns
 
     let $filteredOptions = new Array();
-    const page_limit = 25;
+    const page_limit = 150;
 
     const filtered = {{ filtered|tojson|safe }};
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};

@@ -126,9 +126,11 @@ tr td:hover .spnTooltip{
         border: none;
         border-bottom: 1px solid #eee; 
         position: relative;
-        padding-left: 48%;
+        padding-left: 43%;
         padding-top: 6px;
         padding-bottom: 10px;
+        white-space: pre-line;
+        width: 97%;
     }   
 
     /* PANEL TABLE */    
@@ -138,7 +140,7 @@ tr td:hover .spnTooltip{
         position: absolute;
         /* Top/left values mimic padding */
         top: 6px;
-        left: 6px;
+        left: 6%;
         padding-right: 10px; 
         white-space: nowrap;
 

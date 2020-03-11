@@ -177,10 +177,12 @@ def _wacc_calc_data(inputData, tax=None):
               a/wacc_data[12]["td" + str(i+1)] if b == 0 else a / b)
     """ WACC """
     for i in range(len(wacc_data[16])):
-        a, b, c, d = _p2f_or_na(wacc_data[6]["td" + str(i+1)])/100, _p2f_or_na(
-            wacc_data[8]["td" + str(i+1)])/100, _p2f_or_na(
-                wacc_data[10]["td" + str(i+1)])/100, _p2f_or_na(
-                    wacc_data[12]["td" + str(i+1)])/100
+        a = "NA" if wacc_data[6]["td" + str(i+1)] == "NA" else _p2f_or_na(
+            wacc_data[6]["td" + str(i+1)])/100
+        b, c, d = _p2f_or_na(wacc_data[8]["td" + str(i+1)]
+                             )/100, _p2f_or_na(
+                            wacc_data[10]["td" + str(i+1)])/100, _p2f_or_na(
+                            wacc_data[12]["td" + str(i+1)])/100
         if any([isinstance(a, str), isinstance(b, str),
                 isinstance(c, str), isinstance(d, str)]):
             wacc_data[16]["td" + str(i+1)] = "NA"
@@ -309,7 +311,7 @@ def panel():
         else:
             cr['COE_PRICE'] = "NA"
 
-    page_limit = 25
+    page_limit = 150
     current_page = int(request.args.get('current_page', 1))
     total = len(crpJSf)
     pages = range(1, int(math.ceil(total / page_limit)) + 1)
@@ -504,6 +506,8 @@ def db_upload():
     files = request.files.getlist('db_file')
     if not files or not any(f for f in files):
         flash(" No File Chosen", "warning")
+    elif len(files) > 9:
+        flash(" Exceeded Max Files", "warning")
     else:
         f_secret = str(os.environ.get("file_secret"))
         for f in files:

@@ -8,7 +8,7 @@
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/> 
             <div class="form-group">
                 <label class="mb-2" for="db_file" style="letter-spacing: 1px;">File Input<span class="fa fa-upload fa-2x mx-1"></span></label>
-                <input type="file" class="form-control-file" name = "db_file" id="db_file" multiple style="max-width: 95%;">
+                <input type="file" class="form-control-file" name = "db_file" id="db_file" accept=".csv" multiple style="max-width: 95%;">
             </div>
             <input type="submit" class="btn btn-secondary btn-lg rounded mt-2 mb-2 py-2"></input>
         </form>

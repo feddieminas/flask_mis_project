@@ -272,8 +272,8 @@
                         });
                     });
                     
-                    if ($('header + div.alert-danger').length) {
-                        $("header + div.alert-danger").remove();
+                    if ($('div:contains("Please")').length) {
+                        $('div:contains("Please")').remove();
                     }
 
                     return true
@@ -287,11 +287,13 @@
                 }
             })
             .fail(function(xhr, status, err) { 
-                if ($('header + div.alert-danger').length == 0) {
+                
+                if ($('header + div.alert-warning').length == 0) {
                     $("header").after("<div class='alert-warning pl-4 py-2 text-left text-md-center'>Page Issue. Please Reload the page </div>");
                 }
             })
-            .always(function(xhrOrData, textStatus, xhrOrErr) {})
+            .always(function(xhrOrData, textStatus, xhrOrErr) {
+            })
         e.preventDefault();
     });
 
