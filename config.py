@@ -6,4 +6,4 @@ if os.path.exists('env.py'):
 class Config:
     MONGO_DBNAME = 'COE'
     MONGO_URI = os.environ.get("MONGO_URI")
-    SECRET_KEY = os.environ.get("SECRET_KEY")
+    SECRET_KEY = os.urandom(16)

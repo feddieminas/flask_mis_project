@@ -400,6 +400,9 @@ def login():
 def logout():
     logout_user()
     flash("You have succesfully logged out", "success")
+    session.pop('f', None)
+    session.pop('w', None)
+    session.pop('b', None)
     return redirect(url_for('login'))
 
 

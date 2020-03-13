@@ -45,17 +45,21 @@ button.multiselect, button.multiselect:hover {
     margin-right: 2px !important;
 }
 
-.elementToFadeIn {
-    opacity: 1;
-    animation: fade 3s linear;
-    -webkit-animation: fade 3s linear;
-    -moz-animation: fade 3s linear;
-    -o-animation: fade 3s linear;
+.m-fadeOut {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s linear 1500ms, opacity 1500ms;
+  -webkit-transition: visibility 0s linear 1500ms, opacity 1500ms;
+  -moz-transition: visibility 0s linear 1500ms, opacity 1500ms;
+  -o-transition: visibility 0s linear 1500ms, opacity 1500ms;
 }
-
-@keyframes fade {
-  0% { opacity: 0 }
-  100% { opacity: 1 }
+.m-fadeIn {
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0s linear 0s, opacity 1500ms;
+  -webkit-transition: visibility 0s linear 0s, opacity 1500ms;
+  -moz-transition: visibility 0s linear 0s, opacity 1500ms;
+  -o-transition: visibility 0s linear 0s, opacity 1500ms;
 }
 
 /* TABLES */
