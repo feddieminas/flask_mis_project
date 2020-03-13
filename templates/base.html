@@ -19,13 +19,22 @@
         <nav>
             <ul id="menu" class="ml-2 ml-sm-auto list-unstyled">
                 {% if current_user.is_authenticated %}
+
                 <li class="mr-3 float-right"><a class="text-decoration-none text-white" href="{{ url_for('logout') }}"><span class="fa fa-sign-out"  aria-hidden="true"></span></a></li>
-                <li class="mr-3 float-right"><a class="text-decoration-none text-white" href="{{ url_for('file_insert') }}">MDB</a></li>  
+
+                {% if current_user.username | startswith %}
+                <li class="mr-3 float-right"><a class="text-decoration-none text-white" href="{{ url_for('file_insert') }}">MDB</a></li>
+                {% endif %}  
+                
                 {% else %} 
+
                 <li class="mr-3 float-right"><a class="text-decoration-none text-white" href="{{ url_for('login') }}">Admin</a></li> 
+                
                 {% endif %}   
+
                 <li class="mr-3 float-right"><a class="text-decoration-none text-white" href="{{ url_for('panel') }}">Panel</a></li> 
-                <li class="mr-3 float-right"><a class="text-decoration-none text-white" class="active" href="{{ url_for('index') }}">WACC</a></li>                                                
+                <li class="mr-3 float-right"><a class="text-decoration-none text-white" class="active" href="{{ url_for('index') }}">WACC</a></li> 
+                
             </ul>       
         </nav>    
     </header>

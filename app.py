@@ -12,10 +12,21 @@ from db_utils import regions, db_erp_data, db_weights_data, db_tax_data, db_data
 if os.path.exists('env.py'):
     import env
 
+
 """ FORMS """
 
 
 login.login_view = 'login'
+
+
+""" custom template filters """
+
+
+@app.template_filter('startswith')
+def starts_with(field):
+    if field.startswith("m"):
+        return True
+    return False
 
 
 """ ERROR HANDLING PAGE IF NOT FOUND """
@@ -196,6 +207,7 @@ def _wacc_calc_data(inputData, tax=None):
 
 
 @app.route('/', methods=['GET'])
+@login_required
 def index():
     form = WACCForm()
     taxJSf = db_tax_data()  # mylistOfDict
@@ -225,6 +237,7 @@ def index():
 
 
 @app.route('/_wacc_nums', methods=['POST'])
+@login_required
 def wacc_nums():
     form = WACCForm(item=request.get_json())
     mylistOfTup = []
@@ -255,6 +268,7 @@ def wacc_nums():
 
 
 @app.route('/panel', methods=['GET'])
+@login_required
 def panel():
     if all(k not in session for k in ("f", "w", "b")):
         session['f'] = None
@@ -332,6 +346,7 @@ def panel():
 
 
 @app.route('/panel/filtering', methods=['POST'])
+@login_required
 def filtering():
     session['f'] = None
     theOptions = request.form.getlist('region_options')
@@ -341,6 +356,7 @@ def filtering():
 
 
 @app.route('/panel/_add_numbers')
+@login_required
 def add_numbers():
     session['w'] = request.args.get('w', 1, type=int)
     session['b'] = request.args.get('b', 1, type=int)
@@ -368,7 +384,10 @@ def login():
             login_user(user_obj)
             next_page = request.args.get('next')
             if not next_page or url_parse(next_page).netloc != '':
-                next_page = url_for('file_insert')
+                if user_obj.username[:1] == "M".lower():
+                    next_page = url_for('file_insert')
+                else:
+                    next_page = url_for('index')
                 flash("You have succesfully logged in", "success")
             return redirect(next_page)
         else:
@@ -381,7 +400,7 @@ def login():
 def logout():
     logout_user()
     flash("You have succesfully logged out", "success")
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
 
 
 """ FILE_INSERT.HTML
