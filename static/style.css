@@ -45,6 +45,19 @@ button.multiselect, button.multiselect:hover {
     margin-right: 2px !important;
 }
 
+.elementToFadeIn {
+    opacity: 1;
+    animation: fade 3s linear;
+    -webkit-animation: fade 3s linear;
+    -moz-animation: fade 3s linear;
+    -o-animation: fade 3s linear;
+}
+
+@keyframes fade {
+  0% { opacity: 0 }
+  100% { opacity: 1 }
+}
+
 /* TABLES */
 
 /* Zebra striping */
