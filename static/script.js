@@ -214,5 +214,5 @@ $(document).ready(function() {
     });
 
     // PANEL Fade In regions when load the page
-    $("div[class*='m-fadeOut']").removeClass('m-fadeOut').addClass('m-fadeIn');
+    $("div[class*='e-fadeOut']").removeClass('e-fadeOut').addClass('e-fadeIn');
 });

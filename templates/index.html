@@ -38,7 +38,7 @@
             </div>            
         </div>         
 
-        <button type="submit" class="btn btn-primary rounded">SUBMIT</button>
+        <button type="submit" class="btn btn-primary rounded" style="width:110px;">SUBMIT</button>
     </form>
 </div>
 
@@ -245,6 +245,7 @@
 
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     $('#wacc_inputs').on('submit', function(e) {
+        $('button[type=submit]').addClass('b-fade');
         $.ajax({
             type : 'POST',
             url : $SCRIPT_ROOT + '/_wacc_nums',
@@ -263,7 +264,6 @@
             })
             .done(function(data, status, xhr) {
                 if (data.wacc_data && data.wacc_data.length) {
-
                     $("tbody tr").each(function (i, val) {      
                         $(this).children("td").each(function (j, val) {
                             if (j > 0) {
@@ -293,6 +293,7 @@
                 }
             })
             .always(function(xhrOrData, textStatus, xhrOrErr) {
+                $('button[type=submit]').removeClass('b-fade');
             })
         e.preventDefault();
     });
