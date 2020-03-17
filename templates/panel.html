@@ -31,7 +31,7 @@
         <input id="search" name="search_val" value="" type="text" class="form-control col-sm-auto col-md-auto col-lg-auto" placeholder="Search"/>
     </div>  
     <div class="form-group order-1 order-md-2 col-10 pr-0 col-sm-10 pr-sm-1 col-md-3 my-sm-2 mb-md-3">
-        <label class="mb-2 pl-3 d-block bg-light text-dark" for="weights_panel" style="margin-left:1px;width: 135px;max-width:135px;min-width:112px;max-height:26px;letter-spacing:1px;">WEIGHTS</label>
+        <label class="mb-2 pl-3 d-block bg-light text-dark" for="weights_panel" style="margin-left:1px;width: 135px;max-width:135px;min-width:112px;max-height:28px;letter-spacing:1px;">WEIGHTS</label>
         <select class="form-control" id="weights_panel" name="weights_panel">
             {% for w in weights %}
                 {% if loop.index == wval %}
@@ -45,7 +45,7 @@
     <div class="form-group order-2 order-md-3 col-md-5 my-sm-2 mb-md-3">
         <div class="row">
             <div class="col-10 pr-1 col-sm-10 pl-sm-3 pr-sm-auto col-md-9">
-                <label class="mb-2 pl-3 d-block bg-light text-dark" for="beta_panel" style="margin-left:1px;width: 135px;max-width:135px;min-width:112px;max-height:26px;letter-spacing:1px;">BETA</label>
+                <label class="mb-2 pl-3 d-block bg-light text-dark" for="beta_panel" style="margin-left:1px;width: 135px;max-width:135px;min-width:112px;max-height:28px;letter-spacing:1px;">BETA</label>
                 <select class="form-control" id="beta_panel" name="beta_panel">
                     {% for b in betas %}
                         {% if loop.index == bval %}
@@ -64,7 +64,7 @@
 </div>
 
 <div class="my-1 mb-3 my-sm-2 my-md-2 my-lg-2" style="overflow:scroll;min-height:42px;max-height:500px;">
-    <table class="table table-hover paginate">
+    <table class="table table-hover paginate" id="panel-results">
         <thead>
             <tr>
                 <th>PERIOD</th>
@@ -84,10 +84,8 @@
                 <td data-th="REGION" class="text-dark">{{ cr['REGION'] }}</td>
                 <td data-th="METHOD" class="text-dark">{{ cr['METHOD'] }} {{ cr['TYPE'] }}</td>
                 <td data-th="CATEGORY" class="text-dark">{{ cr['CATEGORY'] }}</td>
-                <td title="" data-th="CRP" class="text-dark">{{ cr['CRP_PRICE'] }}
-                <span class="spnTooltip bg-light text-dark">CRP</span></td>
-                <td title="" data-th="COE" class="text-dark">{{ cr['COE_PRICE'] }}
-                <span class="spnTooltip bg-light text-dark">COE</span></td>
+                <td title="CRP" data-th="CRP" class="text-dark">{{ cr['CRP_PRICE'] }}</td>
+                <td title="COE" data-th="COE" class="text-dark">{{ cr['COE_PRICE'] }}</td>
             </tr>
         {% endfor %}
         </tbody>
@@ -165,10 +163,8 @@
             output += '<td data-th="REGION" class="text-dark">' + filtPg[i].REGION + '</td>'
             output += '<td data-th="METHOD" class="text-dark">' + filtPg[i].METHOD + ' ' + filtPg[i].TYPE + '</td>'
             output += '<td data-th="CATEGORY" class="text-dark">' + filtPg[i].CATEGORY + '</td>'
-            output += '<td title="" data-th="CRP" class="text-dark">' + filtPg[i].CRP_PRICE +
-            '<span class="spnTooltip bg-light text-dark">CRP</span>' + '</td>'
-            output += '<td title="" data-th="COE" class="text-dark">' + filtPg[i].COE_PRICE +
-            '<span class="spnTooltip bg-light text-dark">COE</span>' + '</td>'
+            output += '<td title="CRP" data-th="CRP" class="text-dark">' + filtPg[i].CRP_PRICE + '</td>'
+            output += '<td title="COE" data-th="COE" class="text-dark">' + filtPg[i].COE_PRICE + '</td>'
             output += '</tr>'
         });
         $("tbody").html(output);  

@@ -106,19 +106,6 @@ td, th {
     width: 1%;
 }
 
-[data-th="CRP"], [data-th="COE"] {
-    position: relative;
-}
-
-tr .spnTooltip {
-    z-index:10;display:none;width:25px;height:16px;
-    margin-left:1px; padding:0px; font-size:12px;
-}
-
-tr td:hover .spnTooltip{
-    display:inline; position:absolute;
-}
-
 /* SEARCH BUTTON */
 
 .has-search .form-control {
@@ -194,8 +181,8 @@ tr td:hover .spnTooltip{
         display: inline-block;
     }
 
-    tr td:hover .spnTooltip{
-        display:none;
+    [title="CRP"], [title="COE"] {
+        display: none;
     }
 
     /* WACC TABLE  */
@@ -219,8 +206,9 @@ tr td:hover .spnTooltip{
 } 
 
 @media only screen and (min-width: 768px) {
-    .table thead th, .table td {
-        white-space: inherit;
+    #wacc-results td, #wacc-results th, #panel-results td,
+    #panel-results th {
+        white-space: pre-wrap;
         vertical-align: inherit;
         padding: 0.5rem 0.70rem;     
     }
