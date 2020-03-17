@@ -106,9 +106,13 @@ td, th {
     width: 1%;
 }
 
+[data-th="CRP"], [data-th="COE"] {
+    position: relative;
+}
+
 tr .spnTooltip {
-    z-index:10;display:none;width:35px;
-    margin-left:1px; padding:0px; font-size:13px;
+    z-index:10;display:none;width:25px;height:16px;
+    margin-left:1px; padding:0px; font-size:12px;
 }
 
 tr td:hover .spnTooltip{
@@ -190,6 +194,10 @@ tr td:hover .spnTooltip{
         display: inline-block;
     }
 
+    tr td:hover .spnTooltip{
+        display:none;
+    }
+
     /* WACC TABLE  */
 
     #wacc-results {
@@ -203,7 +211,21 @@ tr td:hover .spnTooltip{
 
     #wacc-results td, #wacc-results th { 
         /* autofit to content */
-        white-space: pre-wrap;
+        white-space: pre-wrap; 
+        vertical-align: inherit;
+        padding: 0.55rem;
     }
 
 } 
+
+@media only screen and (min-width: 768px) {
+    .table thead th, .table td {
+        white-space: inherit;
+        vertical-align: inherit;
+        padding: 0.5rem 0.70rem;     
+    }
+
+    #wacc-results td, #wacc-results th {
+        width: auto;
+    }
+}
