@@ -98,7 +98,7 @@ th {
 }
 
 .table td, .table thead th { 
-    border: 1px solid #ccc; 
+    border: 1px solid #f8f9fa; 
     text-align: center; /* along with vertical-align middle, would center your text, if not used btsp classes */
     min-width: 50px;
     /* autofit to content */
@@ -157,7 +157,7 @@ th {
         left: -9999px;
     }
     
-    tr { border: 1px solid #ccc; }
+    tr { border: 1px solid #f8f9fa; }
     
     .paginate td { 
         /* Behave  like a "row" */
