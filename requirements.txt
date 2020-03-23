@@ -5,6 +5,7 @@ dnspython~=1.16.0
 Flask~=1.1.1
 Flask-Login~=0.4.1
 Flask-PyMongo~=2.3.0
+flask-talisman~=0.7.0
 Flask-WTF~=0.14.2
 itsdangerous~=1.1.0
 numpy~=1.17.4

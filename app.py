@@ -7,7 +7,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from forms import LoginForm, WACCForm, betas, weights
 from bson.json_util import dumps
 from user import User
-from init_app import app, mongo, csrf, login
+from init_app import app, mongo, csrf, login, Talisman
 from db_utils import regions, db_erp_data, db_weights_data, db_tax_data, db_data
 if os.path.exists('env.py'):
     import env

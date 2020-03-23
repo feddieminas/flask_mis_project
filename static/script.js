@@ -61,10 +61,10 @@ $(document).ready(function() {
                 ul: '<ul class="multiselect-container dropdown-menu p-1 m-0"></ul>'
         },
         nonSelectedText:'ALL REGIONS',
-        buttonWidth: '222px',
-        onChange: function(option, checked, select) {
-            console.log($(option), $(option).val(), checked, select); // printed bootstrap multiselect options
-        }       
+        buttonWidth: '222px'
+        //onChange: function(option, checked, select) {
+            //console.log($(option), $(option).val(), checked, select); // printed bootstrap multiselect options
+        //}
     });
 
     if (typeof filtered !== 'undefined') {
