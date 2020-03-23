@@ -84,6 +84,15 @@ button.multiselect, button.multiselect:hover {
   -o-transition: visibility 1700ms ease-in-out 0s, opacity 1700ms;
 }
 
+.panel-labels-orient {
+    margin-left:1px;
+    width: 135px;
+    max-width:135px;
+    min-width:112px;
+    max-height:28px;
+    letter-spacing:1px;
+}
+
 /* TABLES */
 
 /* Zebra striping */
@@ -132,6 +141,16 @@ th {
     -webkit-transform: translateY(25%);
     -o-transform: translateY(25%);
     -ms-transform: translateY(25%);  
+}
+
+/* HELPERS */
+
+.w--110 {
+    width:110px;
+}
+
+.overflow-scrl {
+    overflow: scroll;
 }
 
 /* MEDIA QUERIES */  

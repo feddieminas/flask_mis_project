@@ -27,11 +27,11 @@
 <div class="row flex-column flex-md-row form-row">  
     <div class="form-group order-3 order-md-1 col-md-4 has-search mb-3 my-sm-2 mb-md-3">
         <span class="fa fa-search form-control-feedback"></span>
-        <label class="mb-2 px-1 d-block bg-info text-white text-center" for="search" style="margin-left:1px;width: 135px;max-width:135px;min-width:112px;max-height:28px;letter-spacing:1px;">COUNTRY<i class="fa fa-flag ml-2" aria-hidden="true"></i></label>
+        <label class="mb-2 px-1 d-block bg-info text-white text-center panel-labels-orient" for="search">COUNTRY<i class="fa fa-flag ml-2" aria-hidden="true"></i></label>
         <input id="search" name="search_val" value="" type="text" class="form-control col-sm-auto col-md-auto col-lg-auto" placeholder="Search"/>
     </div>  
     <div class="form-group order-1 order-md-2 col-10 pr-0 col-sm-10 pr-sm-1 col-md-3 my-sm-2 mb-md-3">
-        <label class="mb-2 pl-3 d-block bg-light text-dark" for="weights_panel" style="margin-left:1px;width: 135px;max-width:135px;min-width:112px;max-height:28px;letter-spacing:1px;">WEIGHTS</label>
+        <label class="mb-2 pl-3 d-block bg-light text-dark panel-labels-orient" for="weights_panel">WEIGHTS</label>
         <select class="form-control" id="weights_panel" name="weights_panel">
             {% for w in weights %}
                 {% if loop.index == wval %}
@@ -45,7 +45,7 @@
     <div class="form-group order-2 order-md-3 col-md-5 my-sm-2 mb-md-3">
         <div class="row">
             <div class="col-10 pr-1 col-sm-10 pl-sm-3 pr-sm-auto col-md-9">
-                <label class="mb-2 pl-3 d-block bg-light text-dark" for="beta_panel" style="margin-left:1px;width: 135px;max-width:135px;min-width:112px;max-height:28px;letter-spacing:1px;">BETA</label>
+                <label class="mb-2 pl-3 d-block bg-light text-dark panel-labels-orient" for="beta_panel">BETA</label>
                 <select class="form-control" id="beta_panel" name="beta_panel">
                     {% for b in betas %}
                         {% if loop.index == bval %}
@@ -63,7 +63,7 @@
     </div>                                      
 </div>
 
-<div class="my-1 mb-3 my-sm-2 my-md-2 my-lg-2" style="overflow:scroll;min-height:42px;max-height:500px;">
+<div class="my-1 mb-3 my-sm-2 my-md-2 my-lg-2 overflow-scrl" style="min-height:42px;max-height:500px;">
     <table class="table table-hover paginate">
         <thead>
             <tr>
